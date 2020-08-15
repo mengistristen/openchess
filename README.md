@@ -232,5 +232,5 @@ Justin Boehnen - [LinkedIn](https://www.linkedin.com/in/justinboehnen/) - [@boeh
 [issues-shield]: https://img.shields.io/github/issues/mengistristen/openchess.svg?style=flat-square
 [issues-url]: https://github.com/mengistristen/openchess/issues
 [license-shield]: https://img.shields.io/github/license/mengistristen/openchess.svg?style=flat-square
-[license-url]: https://github.com/mengistristen/openchess/blob/master/LICENSE.txt
+[license-url]: https://github.com/mengistristen/openchess/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
