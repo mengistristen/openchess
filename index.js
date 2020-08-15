@@ -1,51 +1,56 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const Board = require('./Board')
 
 const app = express()
 
-const getBoard = (size) => {
-    let markup = ''
-    let tileWidth = size / 8
-    let rowColor = false
-
-    for(i = 0;i < 8; ++i) {
-        rowColor = !rowColor
-        let tileColor = rowColor
-
-        for(j = 0; j < 8; ++j) {
-            tileColor = !tileColor
-            
-            if(tileColor)
-                markup += `<rect x='${tileWidth * i}' y='${tileWidth * j}' width='${tileWidth}' height='${tileWidth}' />`
-        }
-    }
-        
-
-    return markup
-}
-
+//Serve the documentation site statically
 app.use(express.static('public'))
 
+/*
+    Method: GET
+    Route: /new
+    Purpose: This route is used to create a new game.
+*/
 app.get('/new', (req, res) => {
-    new Board(400)
-    res.send({
-        id: '1234'
-    })
+    let board = new Board(req.query.size || 400)
+
+    res.send(board.render())
 })
 
-app.get('/:id', (req, res) => {
-    res.send(`
-    <svg xmlns='https://www.w3.org/2000/svg' width='400' height='400'>
-        ${getBoard(400)}
-    </svg>
-    `)
-})
-
-app.get('/:from-:to', (req, res) => {
-    const { from, to } = req.params
-    //res.setHeader('Content-Type', 'image/svg+xml')
+/*
+    Method: GET
+    Route: /game/:id
+    Purpose: This method is used to get an SVG image
+        for a game specified by an id.
+*/
+app.get('/game/:id', (req, res) => {
+    let board = new Board(400)
     
+    res.send(board.render())
+})
+
+/*
+    Method: GET
+    Route: /game/:id/:from-:to
+    Purpose: This route is used to move a piece
+        on a board specified by an id.
+*/
+app.get('/game/:id/:from-:to', (req, res) => {
+    try {
+        const { from, to } = req.params
+        let coordinate = /[A-H][1-8]/
+        //res.setHeader('Content-Type', 'image/svg+xml')
+        
+        if(!coordinate.test(from) || !coordinate.test(to))
+            res.send('no') 
+        else
+            res.send({from, to})
+    }
+    catch (err) {
+        res.send({
+
+        })
+    }
 })
 
 app.listen(8000, () => console.log('Server listening at http://localhost:8000'))

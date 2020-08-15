@@ -1,3 +1,6 @@
+/*
+    Purpose: This is the definition file for the board class.
+*/
 const pieces = {
     NONE: 'none',
     PAWN: 'pawn', 
@@ -56,8 +59,36 @@ class Board {
 
     }
 
-    static fromData(boardSize, data) {
-        return new Board(boardSize)
+    render() {
+        let tileSize = this.boardSize / 8
+        let inner = ''
+
+        for(let y = 0; y < 8; ++y) {
+            for(let x = 0; x < 8; ++x) {
+                let pieceData = this.board[y][x]
+
+                if(pieceData.piece !== pieces.NONE) {
+                    inner += `<image 
+                        x='${x * tileSize}' 
+                        y='${y * tileSize}' 
+                        width='${tileSize}' 
+                        height='${tileSize}' 
+                        href='https://openchess.s3-us-west-2.amazonaws.com/${pieceData.piece}_${pieceData.color}.svg' 
+                    />`
+                }
+            }
+        }
+
+        return `
+        <svg xmlns='https://www.w3.org/2000/svg' width='400' height='400'>
+            ${inner}
+        </svg>`
+    }
+
+    static fromDataString(boardSize, data) {
+        let board = new Board(boardSize)
+        board.board = JSON.parse(data)
+        return board
     }
 }
 
