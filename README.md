@@ -34,23 +34,23 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/github_username/repo">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/mengistristen/openchess">
+    <img src="images/openchess_logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">openchess</h3>
 
   <p align="center">
-    A simple API for playing games that use an 8x8 chess board.
+    A simple API for playing games that use an 8x8 checker board.
     <br />
     <a href="https://github.com/github_username/repo"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo">View Demo</a>
+    <!-- PUT S3 DEMO HERE <a href="https://github.com/github_username/repo">View Demo</a>-->
     ·
-    <a href="https://github.com/github_username/repo/issues">Report Bug</a>
+    <a href="https://github.com/mengistristen/openchess/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo/issues">Request Feature</a>
+    <a href="https://github.com/mengistristen/openchess/issues">Request Feature</a>
   </p>
 </p>
 
