@@ -11,10 +11,15 @@ app.use(express.static('public'))
     Route: /new
     Purpose: This route is used to create a new game.
 */
-app.get('/new', (req, res) => {
-    let board = new Board(req.query.size || 400)
+app.get('/new', async (req, res) => {
+    let board = new Board(Number.parseInt(req.query.size) || 400)
 
-    res.send(board.render())
+    await board.save()
+
+    res.status(201).send({
+        id: board.id,
+        size: board.boardSize
+    })
 })
 
 /*

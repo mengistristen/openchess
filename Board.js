@@ -1,6 +1,8 @@
 /*
     Purpose: This is the definition file for the board class.
 */
+const redis = require('./redisClient')
+
 const pieces = {
     NONE: 'none',
     PAWN: 'pawn', 
@@ -22,6 +24,7 @@ const mainRow = [pieces.ROOK, pieces.KNIGHT, pieces.BISHOP, pieces.KING, pieces.
 class Board {
     constructor (boardSize) {
         this.boardSize = boardSize
+        this.id = Date.now().toString().slice(4, -1)
         this.board = Array(8)
 
         //Setup black side
@@ -55,8 +58,8 @@ class Board {
         })
     }
 
-    save() {
-
+    async save() {
+        await redis.hset([`game:${this.id}`, 'size', this.boardSize, 'board', JSON.stringify(this.board)])
     }
 
     render() {
