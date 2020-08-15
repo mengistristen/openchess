@@ -22,7 +22,16 @@ const colors = {
     RED: 'red'
 }
 
-const mainRow = [pieces.ROOK, pieces.KNIGHT, pieces.BISHOP, pieces.KING, pieces.QUEEN, pieces.BISHOP, pieces.KNIGHT, pieces.ROOK]
+const mainRow = [
+  pieces.ROOK,
+  pieces.KNIGHT,
+  pieces.BISHOP,
+  pieces.KING,
+  pieces.QUEEN,
+  pieces.BISHOP,
+  pieces.KNIGHT,
+  pieces.ROOK
+]
 
 class Board {
     constructor (boardSize, generator = '') {
@@ -65,32 +74,37 @@ class Board {
         board[7] = mainRow.map(piece => {
             return { color: colors.WHITE, piece }
         })
+
+        return board
     }
 
     render() {
         let tileSize = this.boardSize / 8
         let inner = ''
+        let margin = 15
 
-        for(let y = 0; y < 8; ++y) {
-            for(let x = 0; x < 8; ++x) {
+        for (let y = 0; y < 8; ++y) {
+            for (let x = 0; x < 8; ++x) {
                 let pieceData = this.board[y][x]
 
-                if(pieceData.piece !== pieces.NONE) {
+                if (pieceData.piece !== pieces.NONE) {
                     inner += `<image 
-                        x='${x * tileSize}' 
-                        y='${y * tileSize}' 
-                        width='${tileSize}' 
-                        height='${tileSize}' 
-                        href='https://openchess.s3-us-west-2.amazonaws.com/${pieceData.piece}_${pieceData.color}.svg' 
-                    />`
+                                    x='${x * tileSize + margin}' 
+                                    y='${y * tileSize + margin}' 
+                                    width='${tileSize - margin * 2}' 
+                                    height='${tileSize - margin * 2}' 
+                                    href='https://openchess.s3-us-west-2.amazonaws.com/${
+                                    pieceData.piece
+                                    }_${pieceData.color}.svg' 
+                                />`
                 }
             }
         }
 
         return `
-        <svg xmlns='https://www.w3.org/2000/svg' width='${this.boardSize}' height='${this.boardSize}'>
-            ${inner}
-        </svg>`
+            <svg xmlns='https://www.w3.org/2000/svg' width='${this.boardSize}' height='${this.boardSize}'>
+                ${inner}
+            </svg>`
     }
 
     async save() {

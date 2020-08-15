@@ -12,7 +12,7 @@ app.use(express.static('public'))
     Purpose: This route is used to create a new game.
 */
 app.get('/new', async (req, res) => {
-    let board = new Board(Number.parseInt(req.query.size) || 400)
+    let board = new Board(Number.parseInt(req.query.size) || 400, req.query.generator || 'chess')
 
     await board.save()
 
@@ -56,7 +56,7 @@ app.get('/game/:id/:from-:to', (req, res) => {
             throw { message: 'Invalid coordinates' }
         
         const board = Board.getBoardById(id)
-        
+
         res.send({from, to})
     }
     catch (err) {
