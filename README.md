@@ -126,7 +126,7 @@ There are numerous ways to customize your openchess game, including:
 2. [Board Size](#board-size)
 3. [Board Color](#board-color)
 4. [Board Frame](#board-frame)
-5. and [Piece Style](#piece-style)
+5. [Piece Style](#piece-style)
 6. and [Piece Margin](#piece-margin)
 
 ### 1. Game Type
@@ -179,9 +179,9 @@ We are always looking to add new games to this projects, if you have a suggestio
 
 ### 4. Board Frame
 
-### 5.Piece Style
+### 5. Piece Style
 
-### 6.Piece Margin
+### 6. Piece Margin
 
 ## Roadmap
 
