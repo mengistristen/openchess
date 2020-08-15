@@ -139,14 +139,13 @@ Here is the list of all supported games:
 
 | Game | option_name |
 | --- | --- |
-| Chess | chess |
-| Checkers | checkers |
-| Absorption | absorbtion |
-| Zero Point One | zpo |
+| [Chess](https://en.m.wikipedia.org/wiki/Chess) | chess |
+| [Checkers/Draughts](https://en.m.wikipedia.org/wiki/Draughts) | checkers |
+| [Amazons](https://en.m.wikipedia.org/wiki/Game_of_the_Amazons) | amazons |
 
 Example:
 ```sh
-openchess.com/new%game=absorbtion
+openchess.com/new%game=amazons
 ```
 
 <!---   #### Checkers
