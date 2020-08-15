@@ -24,6 +24,7 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+[![PayPal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E6RKPR34SH6CU)
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
@@ -210,7 +211,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Tristen Mengis - [@thetmeng](https://twitter.com/thetmeng) <!--- [website]()-->
+Tristen Mengis - [![Twitter Follow](https://img.shields.io/twitter/follow/thetmeng.svg?style=social)](https://twitter.com/thetmeng)  <!--- [website]()-->
 
 Justin Boehnen - [@boehnenj](https://twitter.com/boehnenj) - [website](https://www.justinboehnen.com)
 
