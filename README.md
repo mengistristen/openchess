@@ -56,8 +56,15 @@
 -   [About the Project](#about-the-project)
     -   [Built With](#built-with)
 -   [Getting Started](#getting-started)
--   [Usage](#how-to-play)
+-   [How To Play](#how-to-play)
+    -   [Moving Pieces](#moving-pieces)
+    -   [Manually Ending A Game](#manually-ending-a-game)
 -   [Customization and Options](#customization-and-options)
+    -   [Game Type](#game-type)
+    -   [Board Size](#board-size)
+    -   [Board Color](#board-color)
+    -   [Board Frame](#board-frame)
+    -   [Piece Style](#piece-style)
 -   [Roadmap](#roadmap)
 -   [Contributing](#contributing)
 -   [License](#license)
@@ -99,7 +106,7 @@ You can start as many games as you like, just keep in mind that latency may be i
 
 The above request is the most straightforward way to begin a game of **chess**. But what if you don't want to play chess? Here's how you [change the game type](#game-type).
 
-## How to Play
+## How To Play
 
 Now that you've [started a game](#getting-started) you probably want to know [how to play](#how-to-play).
 
@@ -122,7 +129,7 @@ There are numerous ways to customize your openchess game, including:
 
 ### Game Type
 
-Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard. Here's how you do it:
+Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 
 -   #### Chess
 ```sh
