@@ -171,7 +171,7 @@ openchess.com/new%game=absorption
 ```sh
 openchess.com/new%game=zpo
 ```-->
-We are always looking to add new games to this projects, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
+We are always looking to add new games to openchess, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
 
 ### Board Size
 
