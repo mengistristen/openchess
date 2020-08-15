@@ -210,7 +210,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Tristen Mengis - [LinkedIn]() - [@thetmeng](https://twitter.com/thetmeng) - [email](mailto:tristen.mengis@oit.edu)
+Tristen Mengis - [LinkedIn](https://www.linkedin.com/mwlite/in/tristen-mengis-81444813b) - [@thetmeng](https://twitter.com/thetmeng) - [email](mailto:tristen.mengis@oit.edu)
 
 Justin Boehnen - [LinkedIn](https://www.linkedin.com/in/justinboehnen/) - [@boehnenj](https://twitter.com/boehnenj) - [email](mailto:justinboehnen@gmaim.com) - [website](https://www.justinboehnen.com)
 
