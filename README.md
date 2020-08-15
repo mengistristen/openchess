@@ -33,7 +33,7 @@
     <img src="images/openchess_logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">openchess</h3>
+  <h2 align="center">openchess</h3>
 
   <p align="center">
     A simple API for playing games that use an 8x8 checker board.
@@ -56,7 +56,7 @@
 -   [About the Project](#about-the-project)
     -   [Built With](#built-with)
 -   [Getting Started](#getting-started)
--   [Usage](#usage)
+-   [Usage](#how-to-play)
 -   [Customization and Options](#customization-and-options)
 -   [Roadmap](#roadmap)
 -   [Contributing](#contributing)
@@ -97,46 +97,59 @@ openchess.com/new
 If successful, you will get a json object with your new game key. This key will be used in all request that involve this game, so make sure to save it.
 You can start as many games as you like, just keep in mind that latency may be introduced if we recieve too much traffic.
 
-The above request is the most straightforward way to begin a game of **chess**. But what if you don't want to play chess?
+The above request is the most straightforward way to begin a game of **chess**. But what if you don't want to play chess? Here's how you [change the game type](#game-type).
+
+## How to Play
+
+Now that you've [started a game](#getting-started) you probably want to know [how to play](#how-to-play).
+
+### Moving Pieces
+
+### Manually Ending A Game
+    
+    openchess games automatically expire **after 1 hour of inactivity**.
+    However, if you feel so inclined to remove a game earlier you may do so with the following request.
+
+
+## Customization and Options
+
+There are numerous ways to customize your openchess game, including:
+- [Game Type](#game-type)
+- [Board Size](#board-size)
+- [Board Color](#board-color)
+- [Board Frame](#board-frame)
+- and [Piece Style](#piece-style)
+
+### Game Type
+
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard. Here's how you do it:
 
--   Chess
+-   #### Chess
 ```sh
 openchess.com/new%game=chess
 ```
--   Checkers
+-   #### Checkers
 ```sh
 openchess.com/new%game=checkers
 ```
--   [Absorption](https://boardgamegeek.com/boardgame/63114/absorption)
+-   #### [Absorption](https://boardgamegeek.com/boardgame/63114/absorption)
 ```sh
 openchess.com/new%game=absorption
 ```
--   [0·1 (Zero Point One)](https://boardgamegeek.com/boardgame/114307/01-zero-point-one)
+-   #### [0·1 (Zero Point One)](https://boardgamegeek.com/boardgame/114307/01-zero-point-one)
 ```sh
 openchess.com/new%game=zpo
 ```
 
 We are always looking to add new games to this projects, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
 
-## Usage
+### Board Size
 
-<!--Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### Board Color
 
-_For more examples, please refer to the [Documentation](https://example.com)-->
+### Board Frame
 
-<!-- ROADMAP -->
-
-## Customization and Options
-
-There are numerous ways to customize your openchess game, including:
-- Game Type
-- Board Size
-- Board Color
-- Board Frame
-- and Piece Style
-
-1. Get a game key
+### Piece Style
 
 ## Roadmap
 
