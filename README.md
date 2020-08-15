@@ -130,11 +130,34 @@ There are numerous ways to customize your openchess game, including:
 ### Game Type
 
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
+```sh
+openchess.com/new%game=_**optionname**_
+```
+
+Here is the list of all supported games:
+
+| Game | optionname |
+| --- | --- |
+| Chess | chess |
+| Checkers | checkers |
+| Absorption | absorbtion |
+| Zero Point One | zpo |
+
+Example:
+```sh
+openchess.com/new%game=absorbtion
+```
+
+<!---   #### Checkers
+```sh
+openchess.com/new%game=checkers
+```
 
 -   #### Chess
 ```sh
 openchess.com/new%game=chess
 ```
+
 -   #### Checkers
 ```sh
 openchess.com/new%game=checkers
@@ -146,8 +169,7 @@ openchess.com/new%game=absorption
 -   #### [0·1 (Zero Point One)](https://boardgamegeek.com/boardgame/114307/01-zero-point-one)
 ```sh
 openchess.com/new%game=zpo
-```
-
+```-->
 We are always looking to add new games to this projects, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
 
 ### Board Size
@@ -192,9 +214,11 @@ Justin Boehnen - [@boehnenj](https://twitter.com/boehnenj) - [website](https://w
 
 ## Acknowledgements
 
+<!-- 
 -   []()
 -   []()
 -   []()
+-->
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
