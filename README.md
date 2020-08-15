@@ -99,7 +99,7 @@ There are endless ways to use openchess, we encourage you experiment, just remem
 
 Before you can send commands and recieve svgs you must start a game, do so with the following `GET` method
 ```sh
-GET  openchess.com/new
+GET  oc.justinboehnen.com/new
 ```
 If successful, you will get a json object with your new game key. This key will be used in all request that involve this game, so make sure to save it.
 You can start as many games as you like, just keep in mind that latency may be introduced if we recieve too much traffic.
