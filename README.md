@@ -131,8 +131,7 @@ There are numerous ways to customize your openchess game, including:
 6. and [Piece Margin](#piece-margin)
 -->
 
-<details>
-<h3><summary>Game Type</summary></h3>
+### Game Type
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 ```sh
 GET  openchess.com/new%game=<option_name>
@@ -174,17 +173,16 @@ openchess.com/new%game=absorption
 openchess.com/new%game=zpo
 ```-->
 We are always looking to add new games to this projects, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
-</details>
 
-### 2. Board Size
+### Board Size
 
-### 3. Board Color
+### Board Color
 
-### 4. Board Frame
+### Board Frame
 
-### 5. Piece Style
+### Piece Style
 
-### 6. Piece Margin
+### Piece Margin
 
 ## Roadmap
 
