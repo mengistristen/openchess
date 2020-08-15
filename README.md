@@ -36,7 +36,7 @@
   <h2 align="center">openchess</h3>
 
   <p align="center">
-    A simple API for playing games that use an 8x8 checker board.
+    A simple API for playing games that use an 8x8 checkerboard.
     <br />
     <!-- PUT S3 DOCS HERE <a href="https://github.com/mengistristen/openchess"><strong>Explore the docs »</strong></a>
     <br />-->
