@@ -10,10 +10,6 @@
 *** github_username, repo, twitter_handle, email
 -->
 
-
-
-
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -22,14 +18,13 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-
-
 
 <!-- PROJECT LOGO -->
 <br />
@@ -43,97 +38,107 @@
   <p align="center">
     A simple API for playing games that use an 8x8 checker board.
     <br />
-    <a href="https://github.com/github_username/repo"><strong>Explore the docs »</strong></a>
-    <br />
+    <!-- PUT S3 DOCS HERE <a href="https://github.com/mengistristen/openchess"><strong>Explore the docs »</strong></a>
+    <br />-->
     <br />
     <!-- PUT S3 DEMO HERE <a href="https://github.com/github_username/repo">View Demo</a>-->
-    ·
+    <!--·-->
     <a href="https://github.com/mengistristen/openchess/issues">Report Bug</a>
     ·
     <a href="https://github.com/mengistristen/openchess/issues">Request Feature</a>
   </p>
 </p>
 
-
-
 <!-- TABLE OF CONTENTS -->
+
 ## Table of Contents
 
-* [About the Project](#about-the-project)
-  * [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-* [Usage](#usage)
-* [Roadmap](#roadmap)
-* [Contributing](#contributing)
-* [License](#license)
-* [Contact](#contact)
-* [Acknowledgements](#acknowledgements)
-
-
+-   [About the Project](#about-the-project)
+    -   [Built With](#built-with)
+-   [Getting Started](#getting-started)
+-   [Usage](#usage)
+-   [Customization and Options](#customization-and-options)
+-   [Roadmap](#roadmap)
+-   [Contributing](#contributing)
+-   [License](#license)
+-   [Contact](#contact)
+-   [Acknowledgements](#acknowledgements)
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+openchess is a simple api that takes http requests and returns svg images representing the current state of the game being played.
+
+<!--[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 Here's a blank template to get started:
 **To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `repo`, `twitter_handle`, `email`
-
+`github_username`, `repo`, `twitter_handle`, `email`-->
 
 ### Built With
 
-* []()
-* []()
-* []()
-
-
+-   [JavaScript](https://www.javascript.com/)
+-   [Express.js](https://expressjs.com/)
+-   [Redis](https://redislabs.com/)
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
-To get a local copy up and running follow these simple steps.
+openchess is a public REST API. That means **no authorization** is needed.
 
-### Prerequisites
+There are endless ways to use openchess, we encourage you experiment, just remember to report any [issues](https://github.com/mengistristen/openchess/issues) you come across!
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
+Before you can send commands and recieve svgs you must start a game, do so with the following request:
 ```sh
-npm install npm@latest -g
+openchess.com/new
+```
+If successful, you will get a json object with your new game key. This key will be used in all request that involve this game, so make sure to save it.
+You can start as many games as you like, just keep in mind that latency may be introduced if we recieve too much traffic.
+
+The above request is the most straightforward way to begin a game of **chess**. But what if you don't want to play chess?
+Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard. Here's how you do it:
+
+-   Chess
+```sh
+openchess.com/new&game=chess
+```
+-   Checkers
+```sh
+openchess.com/new&game=checkers
+```
+-   [Absorption](https://boardgamegeek.com/boardgame/63114/absorption)
+```sh
+openchess.com/new&game=absorption
+```
+-   [0·1 (Zero Point One)](https://boardgamegeek.com/boardgame/114307/01-zero-point-one)
+```sh
+openchess.com/new&game=zpo
 ```
 
-### Installation
- 
-1. Clone the repo
-```sh
-git clone https://github.com/github_username/repo.git
-```
-2. Install NPM packages
-```sh
-npm install
-```
+We are always looking to add new games to this projects, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
 
-
-
-<!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+<!--Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-
+_For more examples, please refer to the [Documentation](https://example.com)-->
 
 <!-- ROADMAP -->
+
+## Customization and Options
+
+There are numerous ways to customize your openchess game, including colors, 
+
+1. Get a game key
+
 ## Roadmap
 
-See the [open issues](https://github.com/github_username/repo/issues) for a list of proposed features (and known issues).
-
-
+See the [open issues](https://github.com/mengistristen/openchess/issues) for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -144,37 +149,31 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-
-
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
+Tristen Mengis - [@thetmeng](https://twitter.com/thetmeng) <!--- [website]()-->
 
-Project Link: [https://github.com/github_username/repo](https://github.com/github_username/repo)
-
-
+Justin Boehnen - [@boehnenj](https://twitter.com/boehnenj) - [website](https://www.justinboehnen.com)
 
 <!-- ACKNOWLEDGEMENTS -->
+
 ## Acknowledgements
 
-* []()
-* []()
-* []()
-
-
-
-
+-   []()
+-   []()
+-   []()
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/mengistristen/openchess.svg?style=flat-square
 [contributors-url]: https://github.com/mengistristen/openchess/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/mengistristen/openchess.svg?style=flat-square
@@ -186,5 +185,7 @@ Project Link: [https://github.com/github_username/repo](https://github.com/githu
 [license-shield]: https://img.shields.io/github/license/mengistristen/openchess.svg?style=flat-square
 [license-url]: https://github.com/mengistristen/openchess/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
+
 <!--[linkedin-url]: https://linkedin.com/in/othneildrew-->
+
 [product-screenshot]: images/screenshot.png
