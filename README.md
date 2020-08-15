@@ -96,7 +96,7 @@ openchess is a public REST API. That means **no authorization** is needed.
 
 There are endless ways to use openchess, we encourage you experiment, just remember to report any [issues](https://github.com/mengistristen/openchess/issues) you come across!
 
-Before you can send commands and recieve svgs you must start a game, do so with the following `GET` method
+Before you can send commands and recieve svgs you must start a game, do so with the following `GET` method:
 ```sh
 GET  oc.justinboehnen.com/new
 ```
