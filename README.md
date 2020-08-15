@@ -134,16 +134,16 @@ There are numerous ways to customize your openchess game, including:
 ### Game Type
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 ```sh
-GET  openchess.com/new%game=<option_name>
+GET  openchess.com/new%game=<game_id>
 ```
 
 Here is the list of all supported games:
 
-| Game | option_name |
+| Game | game_id |
 | --- | --- |
-| [Chess](https://en.m.wikipedia.org/wiki/Chess) | chess |
-| [Checkers/Draughts](https://en.m.wikipedia.org/wiki/Draughts) | checkers |
-| [Amazons](https://en.m.wikipedia.org/wiki/Game_of_the_Amazons) | amazons |
+| [Chess](https://en.m.wikipedia.org/wiki/Chess) | `chess` |
+| [Checkers/Draughts](https://en.m.wikipedia.org/wiki/Draughts) | `checkers` |
+| [Amazons](https://en.m.wikipedia.org/wiki/Game_of_the_Amazons) | `amazons` |
 
 Example:
 ```sh
