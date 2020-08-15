@@ -102,19 +102,19 @@ Despite the name, openchess actually supports playing any game that uses an 8x8 
 
 -   Chess
 ```sh
-openchess.com/new&game=chess
+openchess.com/new%game=chess
 ```
 -   Checkers
 ```sh
-openchess.com/new&game=checkers
+openchess.com/new%game=checkers
 ```
 -   [Absorption](https://boardgamegeek.com/boardgame/63114/absorption)
 ```sh
-openchess.com/new&game=absorption
+openchess.com/new%game=absorption
 ```
 -   [0·1 (Zero Point One)](https://boardgamegeek.com/boardgame/114307/01-zero-point-one)
 ```sh
-openchess.com/new&game=zpo
+openchess.com/new%game=zpo
 ```
 
 We are always looking to add new games to this projects, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
@@ -129,7 +129,12 @@ _For more examples, please refer to the [Documentation](https://example.com)-->
 
 ## Customization and Options
 
-There are numerous ways to customize your openchess game, including colors, 
+There are numerous ways to customize your openchess game, including:
+- Game Type
+- Board Size
+- Board Color
+- Board Frame
+- and Piece Style
 
 1. Get a game key
 
