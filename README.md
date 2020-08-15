@@ -211,9 +211,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Tristen Mengis - [![LinkedIn][linkedin-shield]]() [![Twitter Follow](https://img.shields.io/twitter/follow/thetmeng.svg?style=social)](https://twitter.com/thetmeng)  <!--- [website]()-->
+Tristen Mengis - [LinkedIn]() [@thetmeng](https://twitter.com/thetmeng) - [email](mailto:tristen.mengis@oit.edu)-->
 
-Justin Boehnen - [![LinkedIn][linkedin-shield]](https://www.linkedin.com/in/justinboehnen/) [![Twitter Follow](https://img.shields.io/twitter/follow/boehnenj.svg?style=social)](https://twitter.com/boehnenj) - [website](https://www.justinboehnen.com)
+Justin Boehnen - [LinkedIn](https://www.linkedin.com/in/justinboehnen/) [boehnenj](https://twitter.com/boehnenj) - [website](https://www.justinboehnen.com)
 
 <!-- ACKNOWLEDGEMENTS -->
 
