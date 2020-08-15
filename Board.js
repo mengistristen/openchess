@@ -83,7 +83,7 @@ class Board {
         }
 
         return `
-        <svg xmlns='https://www.w3.org/2000/svg' width='400' height='400'>
+        <svg xmlns='https://www.w3.org/2000/svg' width='${this.boardSize}' height='${this.boardSize}'>
             ${inner}
         </svg>`
     }
