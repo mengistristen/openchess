@@ -10,56 +10,61 @@ const pieces = {
     BISHOP: 'bishop',
     KNIGHT: 'knight',
     QUEEN: 'queen',
-    KING: 'king'
+    KING: 'king',
+    STANDARD: 'standard',
+    KINGED: 'kinged'
 }
 
 const colors = {
     NONE: 'none',
     WHITE: 'white',
-    BLACK: 'black'
+    BLACK: 'black',
+    RED: 'red'
 }
 
 const mainRow = [pieces.ROOK, pieces.KNIGHT, pieces.BISHOP, pieces.KING, pieces.QUEEN, pieces.BISHOP, pieces.KNIGHT, pieces.ROOK]
 
 class Board {
-    constructor (boardSize) {
+    constructor (boardSize, generator = '') {
         this.boardSize = boardSize
         this.id = Date.now().toString().slice(4, -1)
-        this.board = Array(8)
+        
+        if(generator === 'chess')
+            this.board = this.generateChessBoard()
+    }
+
+    generateChessBoard() {
+        const board = Array(8)
 
         //Setup black side
-        this.board[0] = mainRow.map(piece => {
+        board[0] = mainRow.map(piece => {
             return { color: colors.BLACK, piece }
         })
-        this.board[1] = [...Array(8)].map(item => {
+        board[1] = [...Array(8)].map(item => {
             return { color: colors.BLACK, piece: pieces.PAWN }
         })
 
         //Setup empty spaces
-        this.board[2] = [...Array(8)].map(() => {
+        board[2] = [...Array(8)].map(() => {
             return { color: colors.NONE, piece: pieces.NONE }
         })
-        this.board[3] = [...Array(8)].map(() => {
+        board[3] = [...Array(8)].map(() => {
             return { color: colors.NONE, piece: pieces.NONE }
         })
-        this.board[4] = [...Array(8)].map(() => {
+        board[4] = [...Array(8)].map(() => {
             return { color: colors.NONE, piece: pieces.NONE }
         })
-        this.board[5] = [...Array(8)].map(() => {
+        board[5] = [...Array(8)].map(() => {
             return { color: colors.NONE, piece: pieces.NONE }
         })
 
         //Setup white side
-        this.board[6] = [...Array(8)].map(() => {
+        board[6] = [...Array(8)].map(() => {
             return { color: colors.WHITE, piece: pieces.PAWN }
         })
-        this.board[7] = mainRow.map(piece => {
+        board[7] = mainRow.map(piece => {
             return { color: colors.WHITE, piece }
         })
-    }
-
-    async save() {
-        await redis.hset([`game:${this.id}`, 'size', this.boardSize, 'board', JSON.stringify(this.board)])
     }
 
     render() {
@@ -88,9 +93,19 @@ class Board {
         </svg>`
     }
 
-    static fromDataString(boardSize, data) {
-        let board = new Board(boardSize)
-        board.board = JSON.parse(data)
+    async save() {
+        await redis.hset([`game:${this.id}`, 'size', this.boardSize, 'board', JSON.stringify(this.board)])
+    }
+    
+    static async getBoardById(id) {
+        const boardSize = await redis.hget(`game:${id}`, 'size')
+
+        if(boardSize === null)
+            throw { message: 'Invalid game id' }
+
+        const board = new Board(boardSize)
+        board.board = JSON.parse(await redis.hget(`game:${id}`, 'board'))
+
         return board
     }
 }

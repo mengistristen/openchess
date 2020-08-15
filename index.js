@@ -28,10 +28,17 @@ app.get('/new', async (req, res) => {
     Purpose: This method is used to get an SVG image
         for a game specified by an id.
 */
-app.get('/game/:id', (req, res) => {
-    let board = new Board(400)
+app.get('/game/:id', async (req, res) => {
+    try {
+        const board = await Board.getBoardById(req.params.id)
     
-    res.send(board.render())
+        res.send(board.render())
+    }
+    catch (err) {
+        res.send({
+            message: err.message
+        })
+    }
 })
 
 /*
@@ -42,18 +49,19 @@ app.get('/game/:id', (req, res) => {
 */
 app.get('/game/:id/:from-:to', (req, res) => {
     try {
-        const { from, to } = req.params
+        const { from, to, id } = req.params
         let coordinate = /[A-H][1-8]/
-        //res.setHeader('Content-Type', 'image/svg+xml')
         
         if(!coordinate.test(from) || !coordinate.test(to))
-            res.send('no') 
-        else
-            res.send({from, to})
+            throw { message: 'Invalid coordinates' }
+        
+        const board = Board.getBoardById(id)
+        
+        res.send({from, to})
     }
     catch (err) {
         res.send({
-
+            message: err.message
         })
     }
 })
