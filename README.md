@@ -119,8 +119,6 @@ GET  openchess.com/game/<game_key>/end
 ```
 
 ## Customization and Options
-
-There are numerous ways to customize your openchess game, including:
 <!--
 1. [Game Type](#game-type)
 2. [Board Size](#board-size)
