@@ -114,9 +114,11 @@ Now that you've [started a game](#getting-started) you probably want to know [ho
 
 ### Manually Ending A Game
     
-    openchess games automatically expire **after 1 hour of inactivity**.
-    However, if you feel so inclined to remove a game earlier you may do so with the following request.
-
+openchess games automatically expire **after 1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with the following request:
+Example:
+```sh
+openchess.com/game/<game_key>/end
+```
 
 ## Customization and Options
 
@@ -131,12 +133,12 @@ There are numerous ways to customize your openchess game, including:
 
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 ```sh
-openchess.com/new%game=_**optionname**_
+openchess.com/new%game=<option_name>
 ```
 
 Here is the list of all supported games:
 
-| Game | optionname |
+| Game | option_name |
 | --- | --- |
 | Chess | chess |
 | Checkers | checkers |
