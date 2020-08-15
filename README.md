@@ -24,7 +24,7 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![PayPal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E6RKPR34SH6CU)
+<!--[![PayPal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E6RKPR34SH6CU)-->
 
 <!-- PROJECT LOGO -->
 <br />
@@ -214,11 +214,10 @@ Tristen Mengis - [LinkedIn](https://www.linkedin.com/mwlite/in/tristen-mengis-81
 
 Justin Boehnen - [LinkedIn](https://www.linkedin.com/in/justinboehnen/) - [@boehnenj](https://twitter.com/boehnenj) - [email](mailto:justinboehnen@gmaim.com) - [website](https://www.justinboehnen.com)
 
-<!-- ACKNOWLEDGEMENTS -->
+<!-- ACKNOWLEDGEMENTS
 
 ## Acknowledgements
 
-<!-- 
 -   []()
 -   []()
 -   []()
