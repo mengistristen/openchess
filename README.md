@@ -97,9 +97,9 @@ openchess is a public REST API. That means **no authorization** is needed.
 
 There are endless ways to use openchess, we encourage you experiment, just remember to report any [issues](https://github.com/mengistristen/openchess/issues) you come across!
 
-Before you can send commands and recieve svgs you must start a game, do so with the following request:
+Before you can send commands and recieve svgs you must start a game, do so with the following `GET` method
 ```sh
-openchess.com/new
+GET  openchess.com/new
 ```
 If successful, you will get a json object with your new game key. This key will be used in all request that involve this game, so make sure to save it.
 You can start as many games as you like, just keep in mind that latency may be introduced if we recieve too much traffic.
@@ -114,9 +114,9 @@ Now that you've [started a game](#getting-started) you probably want to know [ho
 
 ### Manually Ending A Game
     
-openchess games automatically expire after **1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with the following request:
+openchess games automatically expire after **1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with the following `GET` method:
 ```sh
-openchess.com/game/<game_key>/end
+GET  openchess.com/game/<game_key>/end
 ```
 
 ## Customization and Options
@@ -132,7 +132,7 @@ There are numerous ways to customize your openchess game, including:
 
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 ```sh
-openchess.com/new%game=<option_name>
+GET  openchess.com/new%game=<option_name>
 ```
 
 Here is the list of all supported games:
@@ -145,7 +145,7 @@ Here is the list of all supported games:
 
 Example:
 ```sh
-openchess.com/new%game=amazons
+GET  openchess.com/new%game=amazons
 ```
 
 <!---   #### Checkers
