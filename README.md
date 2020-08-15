@@ -114,8 +114,7 @@ Now that you've [started a game](#getting-started) you probably want to know [ho
 
 ### Manually Ending A Game
     
-openchess games automatically expire **after 1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with the following request:
-Example:
+openchess games automatically expire after **1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with the following request:
 ```sh
 openchess.com/game/<game_key>/end
 ```
