@@ -122,13 +122,13 @@ GET  openchess.com/game/<game_key>/end
 ## Customization and Options
 
 There are numerous ways to customize your openchess game, including:
-- [Game Type](#game-type)
-- [Board Size](#board-size)
-- [Board Color](#board-color)
-- [Board Frame](#board-frame)
-- and [Piece Style](#piece-style)
+1. [Game Type](#game-type)
+2. [Board Size](#board-size)
+3. [Board Color](#board-color)
+4. [Board Frame](#board-frame)
+5. and [Piece Style](#piece-style)
 
-### Game Type
+### 1. Game Type
 
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 ```sh
@@ -172,13 +172,13 @@ openchess.com/new%game=zpo
 ```-->
 We are always looking to add new games to this projects, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
 
-### Board Size
+2. ### Board Size
 
-### Board Color
+### 3. Board Color
 
-### Board Frame
+### 4. Board Frame
 
-### Piece Style
+### 5.Piece Style
 
 ## Roadmap
 
