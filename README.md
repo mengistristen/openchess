@@ -132,7 +132,7 @@ There are numerous ways to customize your openchess game, including:
 -->
 
 <details>
-<summary><h3>Game Type</h3></summary>
+<h3><summary>Game Type</summary></h3>
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 ```sh
 GET  openchess.com/new%game=<option_name>
