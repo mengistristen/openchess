@@ -96,9 +96,9 @@ openchess is a public REST API. That means **no authorization** is needed.
 
 There are endless ways to use openchess, we encourage you experiment, just remember to report any [issues](https://github.com/mengistristen/openchess/issues) you come across!
 
-Before you can send commands and recieve svgs you must start a game, do so with the following `GET` method:
-```sh
-GET  oc.justinboehnen.com/new
+Before you can send commands and recieve svgs you must start a game, do so with the following `GET` request to the specifed URI:
+```http
+GET oc.justinboehnen.com/new
 ```
 If successful, you will get a json object with your new game key. This key will be used in all request that involve this game, so make sure to save it.
 You can start as many games as you like, just keep in mind that latency may be introduced if we recieve too much traffic.
@@ -113,9 +113,9 @@ Now that you've [started a game](#getting-started) you probably want to know [ho
 
 ### Manually Ending A Game
     
-openchess games automatically expire after **1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with the following `GET` method:
-```sh
-GET  openchess.com/game/<game_key>/end
+openchess games automatically expire after **1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with a `GET` request to the following URI:
+```http
+GET openchess.com/game/<game_key>/end
 ```
 
 ## Customization and Options
@@ -130,8 +130,8 @@ GET  openchess.com/game/<game_key>/end
 
 ### Game Type
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
-```sh
-GET  openchess.com/new%game=<game_id>
+```http
+GET openchess.com/new%game=<game_id>
 ```
 
 Here is the list of all supported games:
@@ -143,30 +143,30 @@ Here is the list of all supported games:
 | [Amazons](https://en.m.wikipedia.org/wiki/Game_of_the_Amazons) | `amazons` |
 
 Example:
-```sh
-GET  openchess.com/new%game=amazons
+```http
+GET openchess.com/new%game=amazons
 ```
 
 <!---   #### Checkers
-```sh
+```http
 openchess.com/new%game=checkers
 ```
 
 -   #### Chess
-```sh
+```http
 openchess.com/new%game=chess
 ```
 
 -   #### Checkers
-```sh
+```http
 openchess.com/new%game=checkers
 ```
 -   #### [Absorption](https://boardgamegeek.com/boardgame/63114/absorption)
-```sh
+```http
 openchess.com/new%game=absorption
 ```
 -   #### [0·1 (Zero Point One)](https://boardgamegeek.com/boardgame/114307/01-zero-point-one)
-```sh
+```http
 openchess.com/new%game=zpo
 ```-->
 We are always looking to add new games to openchess, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
