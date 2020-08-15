@@ -76,11 +76,7 @@
 
 openchess is a simple api that takes http requests and returns svg images representing the current state of the game being played.
 
-<!--[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `repo`, `twitter_handle`, `email`-->
+<!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
 ### Built With
 
@@ -115,7 +111,7 @@ Now that you've [started a game](#getting-started) you probably want to know [ho
     
 openchess games automatically expire after **1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with a `GET` request to the following URI:
 ```http
-GET openchess.com/game/<game_key>/end
+GET oc.justinboehnen.com/game/<game_key>/end
 ```
 
 ## Customization and Options
@@ -131,7 +127,7 @@ GET openchess.com/game/<game_key>/end
 ### Game Type
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 ```http
-GET openchess.com/new%game=<game_id>
+GET oc.justinboehnen.com/new%game=<game_id>
 ```
 
 Here is the list of all supported games:
@@ -144,7 +140,7 @@ Here is the list of all supported games:
 
 Example:
 ```http
-GET openchess.com/new%game=amazons
+GET oc.justinboehnen.com/new%game=amazons
 ```
 
 <!---   #### Checkers
