@@ -5,51 +5,50 @@ const redis = require('./redisClient')
 
 const pieces = {
     NONE: 'none',
-    PAWN: 'pawn', 
+    PAWN: 'pawn',
     ROOK: 'rook',
     BISHOP: 'bishop',
     KNIGHT: 'knight',
     QUEEN: 'queen',
     KING: 'king',
     STANDARD: 'standard',
-    KINGED: 'kinged'
+    KINGED: 'kinged',
 }
 
 const colors = {
     NONE: 'none',
     WHITE: 'white',
     BLACK: 'black',
-    RED: 'red'
+    RED: 'red',
 }
 
 const mainRow = [
-  pieces.ROOK,
-  pieces.KNIGHT,
-  pieces.BISHOP,
-  pieces.KING,
-  pieces.QUEEN,
-  pieces.BISHOP,
-  pieces.KNIGHT,
-  pieces.ROOK
+    pieces.ROOK,
+    pieces.KNIGHT,
+    pieces.BISHOP,
+    pieces.KING,
+    pieces.QUEEN,
+    pieces.BISHOP,
+    pieces.KNIGHT,
+    pieces.ROOK,
 ]
 
 class Board {
-    constructor (boardSize, generator = '') {
+    constructor(boardSize, generator = '') {
         this.boardSize = boardSize
         this.id = Date.now().toString().slice(4, -1)
-        
-        if(generator === 'chess')
-            this.board = this.generateChessBoard()
+
+        if (generator === 'chess') this.board = this.generateChessBoard()
     }
 
     generateChessBoard() {
         const board = Array(8)
 
         //Setup black side
-        board[0] = mainRow.map(piece => {
+        board[0] = mainRow.map((piece) => {
             return { color: colors.BLACK, piece }
         })
-        board[1] = [...Array(8)].map(item => {
+        board[1] = [...Array(8)].map((item) => {
             return { color: colors.BLACK, piece: pieces.PAWN }
         })
 
@@ -71,7 +70,7 @@ class Board {
         board[6] = [...Array(8)].map(() => {
             return { color: colors.WHITE, piece: pieces.PAWN }
         })
-        board[7] = mainRow.map(piece => {
+        board[7] = mainRow.map((piece) => {
             return { color: colors.WHITE, piece }
         })
 
@@ -94,7 +93,7 @@ class Board {
                                     width='${tileSize - margin * 2}' 
                                     height='${tileSize - margin * 2}' 
                                     href='https://openchess.s3-us-west-2.amazonaws.com/${
-                                    pieceData.piece
+                                        pieceData.piece
                                     }_${pieceData.color}.svg' 
                                 />`
                 }
@@ -108,14 +107,19 @@ class Board {
     }
 
     async save() {
-        await redis.hset([`game:${this.id}`, 'size', this.boardSize, 'board', JSON.stringify(this.board)])
+        await redis.hset([
+            `game:${this.id}`,
+            'size',
+            this.boardSize,
+            'board',
+            JSON.stringify(this.board),
+        ])
     }
-    
+
     static async getBoardById(id) {
         const boardSize = await redis.hget(`game:${id}`, 'size')
 
-        if(boardSize === null)
-            throw { message: 'Invalid game id' }
+        if (boardSize === null) throw { message: 'Invalid game id' }
 
         const board = new Board(boardSize)
         board.board = JSON.parse(await redis.hget(`game:${id}`, 'board'))

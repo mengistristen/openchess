@@ -12,14 +12,27 @@ app.use(express.static('public'))
     Purpose: This route is used to create a new game.
 */
 app.get('/new', async (req, res) => {
-    let board = new Board(Number.parseInt(req.query.size) || 400, req.query.generator || 'chess')
+    try {
+        const { size } = req.query
+        const generator = req.query.generator || 'chess'
 
-    await board.save()
+        if (generator !== 'chess')
+            throw { message: 'Invalid generator' }
 
-    res.status(201).send({
-        id: board.id,
-        size: board.boardSize
-    })
+        let board = new Board(Number.parseInt(size) || 400, generator)
+
+        await board.save()
+
+        res.status(201).send({
+            id: board.id,
+            size: board.boardSize
+        })
+    }
+    catch (err) {
+        res.send({
+            message: err.message
+        })
+    }
 })
 
 /*
