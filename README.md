@@ -25,7 +25,6 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![PayPal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E6RKPR34SH6CU)
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -211,9 +210,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Tristen Mengis - [LinkedIn]() [@thetmeng](https://twitter.com/thetmeng) - [email](mailto:tristen.mengis@oit.edu)-->
+Tristen Mengis - [LinkedIn]() - [@thetmeng](https://twitter.com/thetmeng) - [email](mailto:tristen.mengis@oit.edu)
 
-Justin Boehnen - [LinkedIn](https://www.linkedin.com/in/justinboehnen/) [boehnenj](https://twitter.com/boehnenj) - [website](https://www.justinboehnen.com)
+Justin Boehnen - [LinkedIn](https://www.linkedin.com/in/justinboehnen/) - [@boehnenj](https://twitter.com/boehnenj) - [email](mailto:justinboehnen@gmaim.com) - [website](https://www.justinboehnen.com)
 
 <!-- ACKNOWLEDGEMENTS -->
 
@@ -239,7 +238,3 @@ Justin Boehnen - [LinkedIn](https://www.linkedin.com/in/justinboehnen/) [boehnen
 [license-shield]: https://img.shields.io/github/license/mengistristen/openchess.svg?style=flat-square
 [license-url]: https://github.com/mengistristen/openchess/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-
-<!--[linkedin-url]: https://linkedin.com/in/othneildrew-->
-
-[product-screenshot]: images/screenshot.png
