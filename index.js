@@ -28,10 +28,7 @@ app.get('/new', async (req, res) => {
 
         res.status(201).send({
             id: board.id,
-            game: s.game,
-            boardSize: parseInt(s.boardSize),
-            pieceStyle: s.pieceStyle,
-            pieceMargin: parseInt(s.pieceMargin),
+            options: s
         })
     }
     catch (err) {
