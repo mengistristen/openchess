@@ -91,13 +91,14 @@ class Board {
         for (let y = 0; y < 8; ++y) {
             for (let x = 0; x < 8; ++x) {
                 let pieceData = this.board[y][x]
-                let color = 'rgb(255,0,0)'
+                let color
 
                 if (
                     (x % 2 === 0 && y % 2 === 1) ||
                     (x % 2 === 1 && y % 2 === 0)
                 )
                     color = 'rgb(0,0,0)'
+                else color = 'rgb(255,0,0)'
 
                 inner += `<rect 
                             x='${x * tileSize}' 
@@ -119,6 +120,7 @@ class Board {
                 }
             }
         }
+
         return `
             <svg xmlns='https://www.w3.org/2000/svg' width='${this.boardSize}' height='${this.boardSize}'>
                 ${inner}
