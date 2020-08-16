@@ -15,11 +15,13 @@ app.get('/new', async (req, res) => {
         let options = {
             game: req.query.game || 'chess',
             boardSize: req.query.bsize || 400,
+            boardDarkColor: req.query.bdark || "rgb(222,222,222)", //hex or rgb, encode hex in request with %23
+            boardLightColor: req.query.blight || "rgb(36,36,36)",
             pieceStyle: req.query.pstyle || 'style1',
             pieceMargin: req.query.pmargin || 5,
         }
 
-        if (options.game !== 'chess') throw { message: 'Invalid generator' }
+        if (options.game !== 'chess') throw { message: 'Invalid game type' }
 
         let board = new Board(options)
 
@@ -86,6 +88,9 @@ app.get('/game/:id/:from-:to', async (req, res) => {
         })
     }
 })
+
+//get /logo returns logo png
+//get /rules/chess
 
 const PORT = 8000
 app.listen(PORT, () =>

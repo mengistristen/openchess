@@ -37,13 +37,13 @@ class Board {
     constructor(options) {
         this.game = options.game
         this.boardSize = options.boardSize
+        this.boardDarkColor = options.boardDarkColor
+        this.boardLightColor = options.boardLightColor
         this.pieceStyle = options.pieceStyle
         this.pieceMargin = options.pieceMargin
         this.id = Date.now().toString().slice(4, -1)
 
         if (this.game === 'chess') this.board = this.generateChessBoard()
-        //console.log('passed to Board: ' + JSON.stringify(options))
-        //console.log(this.board)
     }
 
     generateChessBoard() {
@@ -97,8 +97,8 @@ class Board {
                     (x % 2 === 0 && y % 2 === 1) ||
                     (x % 2 === 1 && y % 2 === 0)
                 )
-                    color = 'rgb(78,29,12)'
-                else color = 'rgb(244,225,195)'
+                    color = this.boardDarkColor
+                else color = this.boardLightColor
 
                 inner += `<rect 
                             x='${x * tileSize}' 
@@ -114,17 +114,16 @@ class Board {
                                     width='${tileSize - this.pieceMargin * 2}' 
                                     height='${tileSize - this.pieceMargin * 2}' 
                                     href='https://openchess.s3-us-west-2.amazonaws.com/${
-                                        pieceData.piece
-                                    }_${pieceData.color}.svg' 
+                        pieceData.piece
+                        }_${pieceData.color}.svg' 
                                 />`
                 }
             }
         }
 
-        return `
-            <svg xmlns='https://www.w3.org/2000/svg' width='${this.boardSize}' height='${this.boardSize}'>
-                ${inner}
-            </svg>`
+        return `<svg xmlns='https://www.w3.org/2000/svg' width='${this.boardSize}' height='${this.boardSize}'>
+            ${inner}
+        </svg>`
     }
 
     movePiece(x1, y1, x2, y2) {
@@ -141,6 +140,8 @@ class Board {
         console.log(this.board)
         await redis.hset(`id:${this.id}`, 'game', this.game)
         await redis.hset(`id:${this.id}`, 'bsize', this.boardSize.toString())
+        await redis.hset(`id:${this.id}`, 'bdark', this.boardDarkColor)
+        await redis.hset(`id:${this.id}`, 'blight', this.boardLightColor)
         await redis.hset(`id:${this.id}`, 'pstyle', this.pieceStyle)
         await redis.hset(
             `id:${this.id}`,
@@ -158,6 +159,8 @@ class Board {
         let s = {
             game: game,
             boardSize: parseInt(await redis.hget(`id:${id}`, 'bsize')),
+            boardDarkColor: await redis.hget(`id:${id}`, 'bdark'),
+            boardLightColor: await redis.hget(`id:${id}`, 'blight'),
             pieceStyle: await redis.hget(`id:${id}`, 'pstyle'),
             pieceMargin: parseInt(await redis.hget(`id:${id}`, 'pmargin')),
         }
