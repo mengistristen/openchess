@@ -90,42 +90,22 @@ class Board {
 
         for (let y = 0; y < 8; ++y) {
             for (let x = 0; x < 8; ++x) {
+                let color
                 if (x % 2 === 0) {
-                    if (y % 2 === 0) {
-                        inner += `<rect 
+                    if (y % 2 === 0) { color = "(244,225,195)" } //white
+                    else { color = "(78,29,12)" } //black
+                }
+                else {
+                    if (y % 2 === 0) { color = "(78,29,12)" } //black
+                    else { color = "(244,225,195)" } //white
+                }
+
+                inner += `<rect 
                             x='${x * tileSize}' 
                             y='${y * tileSize}' 
                             width='${tileSize}' 
                             height='${tileSize}'
-                            style="fill:rgb(255,0,0)"/>`//;stroke-width:3;stroke:rgb(255,0,0)" />`
-                    }
-                    else {
-                        inner += `<rect 
-                        x='${x * tileSize}' 
-                        y='${y * tileSize}' 
-                        width='${tileSize}' 
-                        height='${tileSize}'
-                        style="fill:rgb(0,0,0)"/>`//;stroke-width:3;stroke:rgb(0,0,0)" />`
-                    }
-                }
-                else {
-                    if (y % 2 === 0) {
-                        inner += `<rect 
-                        x='${x * tileSize}' 
-                        y='${y * tileSize}' 
-                        width='${tileSize}' 
-                        height='${tileSize}'
-                        style="fill:rgb(0,0,0)"/>`//;stroke-width:3;stroke:rgb(0,0,0)" />`
-                    }
-                    else {
-                        inner += `<rect 
-                        x='${x * tileSize}' 
-                        y='${y * tileSize}' 
-                        width='${tileSize}' 
-                        height='${tileSize}'
-                        style="fill:rgb(255,0,0)"/>`//;stroke-width:3;stroke:rgb(255,0,0)" />`
-                    }
-                }
+                            style="fill:rgb${color}"/>`//;stroke-width:3;stroke:rgb(255,0,0)" />`
             }
         }
 
