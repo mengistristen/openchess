@@ -94,16 +94,19 @@ There are endless ways to use openchess, we encourage you experiment, just remem
 
 Before you can send commands and recieve svgs you must start a game, do so with a `GET` request to the following URI:
 ```bash
-curl "oc.justinboehnen.com/new"
+$ curl 'oc.justinboehnen.com/new'
 ```
-If successful, you will get a json object with your new game key. This key will be used in all request that involve this game, so make sure to save it.
+```javascript
+{"id":"f29ce0d6-0678-4cb1-ad60-ad448e3cd5af","size":400}
+```
+
+If successful, you will get a json object with your new game key. 
+This key will be used in all request that involve this game, so make sure to save it.
 You can start as many games as you like, just keep in mind that latency may be introduced if we recieve too much traffic.
 
 The above request is the most straightforward way to begin a game of **chess**. But what if you don't want to play chess? Here's how you [change the game type](#game-type).
 
 ## How To Play
-
-Now that you've [started a game](#getting-started) you probably want to know [how to play](#how-to-play).
 
 ### Moving Pieces
 
