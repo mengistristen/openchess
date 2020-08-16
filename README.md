@@ -127,7 +127,7 @@ curl "oc.justinboehnen.com/game/f29ce0d6-0678-4cb1-ad60-ad448e3cd5af/end"
 ### Game Type
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 ```bash
-curl "oc.justinboehnen.com/new?game=amazons"
+curl "oc.justinboehnen.com/new?game=checkers"
 ```
 
 Here is the list of all supported games:
@@ -136,7 +136,7 @@ Here is the list of all supported games:
 | --- | --- |
 | [Chess](https://en.m.wikipedia.org/wiki/Chess) | `chess` |
 | [Checkers/Draughts](https://en.m.wikipedia.org/wiki/Draughts) | `checkers` |
-| [Amazons](https://en.m.wikipedia.org/wiki/Game_of_the_Amazons) | `amazons` |
+| [Breakthrough](https://en.wikipedia.org/wiki/Breakthrough_(board_game)) | `breakthrough` |
 
 <!---   #### Checkers
 ```http
