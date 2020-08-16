@@ -16,8 +16,7 @@ app.get('/new', async (req, res) => {
         const { size } = req.query
         const generator = req.query.generator || 'chess'
 
-        if (generator !== 'chess')
-            throw { message: 'Invalid generator' }
+        if (generator !== 'chess') throw { message: 'Invalid generator' }
 
         let board = new Board(Number.parseInt(size) || 400, generator)
 
@@ -25,12 +24,11 @@ app.get('/new', async (req, res) => {
 
         res.status(201).send({
             id: board.id,
-            size: board.boardSize
+            size: board.boardSize,
         })
-    }
-    catch (err) {
+    } catch (err) {
         res.send({
-            message: err.message
+            message: err.message,
         })
     }
 })
@@ -44,12 +42,11 @@ app.get('/new', async (req, res) => {
 app.get('/game/:id', async (req, res) => {
     try {
         const board = await Board.getBoardById(req.params.id)
-    
+
         res.send(board.render())
-    }
-    catch (err) {
+    } catch (err) {
         res.send({
-            message: err.message
+            message: err.message,
         })
     }
 })
@@ -64,17 +61,16 @@ app.get('/game/:id/:from-:to', (req, res) => {
     try {
         const { from, to, id } = req.params
         let coordinate = /[A-H][1-8]/
-        
-        if(!coordinate.test(from) || !coordinate.test(to))
+
+        if (!coordinate.test(from) || !coordinate.test(to))
             throw { message: 'Invalid coordinates' }
-        
+
         const board = Board.getBoardById(id)
 
-        res.send({from, to})
-    }
-    catch (err) {
+        res.send({ from, to })
+    } catch (err) {
         res.send({
-            message: err.message
+            message: err.message,
         })
     }
 })
