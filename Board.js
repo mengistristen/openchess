@@ -34,20 +34,20 @@ const mainRow = [
 ]
 
 class Board {
-    constructor(s) {
-        this.game = s.game
-        this.boardSize = s.boardSize
-        this.pieceStyle = s.pieceStyle
-        this.pieceMargin = s.pieceMargin
+    constructor(options) {
+        this.game = options.game
+        this.boardSize = options.boardSize
+        this.pieceStyle = options.pieceStyle
+        this.pieceMargin = options.pieceMargin
         this.id = Date.now().toString().slice(4, -1)
 
-        if (this.game === "chess") this.board = this.generateChessBoard()
-        console.log("passed to Board: " + JSON.stringify(s))
-        console.log(this.board)
+        if (this.game === 'chess') this.board = this.generateChessBoard()
+        //console.log('passed to Board: ' + JSON.stringify(options))
+        //console.log(this.board)
     }
 
     generateChessBoard() {
-        console.log("in generate chess board")
+        console.log('in generate chess board')
         const board = Array(8)
 
         //Setup black side
@@ -84,54 +84,27 @@ class Board {
     }
 
     render() {
-        console.log("in render")
+        console.log('in render')
         let tileSize = this.boardSize / 8
         let inner = ''
 
         for (let y = 0; y < 8; ++y) {
             for (let x = 0; x < 8; ++x) {
-                if (x % 2 === 0) {
-                    if (y % 2 === 0) {
-                        inner += `<rect 
+                let pieceData = this.board[y][x]
+                let color = 'rgb(255,0,0)'
+
+                if (
+                    (x % 2 === 0 && y % 2 === 1) ||
+                    (x % 2 === 1 && y % 2 === 0)
+                )
+                    color = 'rgb(0,0,0)'
+
+                inner += `<rect 
                             x='${x * tileSize}' 
                             y='${y * tileSize}' 
                             width='${tileSize}' 
                             height='${tileSize}'
-                            style="fill:rgb(255,0,0)"/>`//;stroke-width:3;stroke:rgb(255,0,0)" />`
-                    }
-                    else {
-                        inner += `<rect 
-                        x='${x * tileSize}' 
-                        y='${y * tileSize}' 
-                        width='${tileSize}' 
-                        height='${tileSize}'
-                        style="fill:rgb(0,0,0)"/>`//;stroke-width:3;stroke:rgb(0,0,0)" />`
-                    }
-                }
-                else {
-                    if (y % 2 === 0) {
-                        inner += `<rect 
-                        x='${x * tileSize}' 
-                        y='${y * tileSize}' 
-                        width='${tileSize}' 
-                        height='${tileSize}'
-                        style="fill:rgb(0,0,0)"/>`//;stroke-width:3;stroke:rgb(0,0,0)" />`
-                    }
-                    else {
-                        inner += `<rect 
-                        x='${x * tileSize}' 
-                        y='${y * tileSize}' 
-                        width='${tileSize}' 
-                        height='${tileSize}'
-                        style="fill:rgb(255,0,0)"/>`//;stroke-width:3;stroke:rgb(255,0,0)" />`
-                    }
-                }
-            }
-        }
-
-        for (let y = 0; y < 8; ++y) {
-            for (let x = 0; x < 8; ++x) {
-                let pieceData = this.board[y][x]
+                            style="fill:${color}" />` //;stroke-width:3;stroke:rgb(255,0,0)" />`
 
                 if (pieceData.piece !== pieces.NONE) {
                     inner += `<image 
@@ -140,24 +113,38 @@ class Board {
                                     width='${tileSize - this.pieceMargin * 2}' 
                                     height='${tileSize - this.pieceMargin * 2}' 
                                     href='https://openchess.s3-us-west-2.amazonaws.com/${
-                        pieceData.piece
-                        }_${pieceData.color}.svg' 
+                                        pieceData.piece
+                                    }_${pieceData.color}.svg' 
                                 />`
                 }
             }
         }
-
         return `
             <svg xmlns='https://www.w3.org/2000/svg' width='${this.boardSize}' height='${this.boardSize}'>
                 ${inner}
             </svg>`
     }
 
+    movePiece(x1, y1, x2, y2) {
+        console.log({ x1, y1, x2, y2 })
+        console.log(this.board[y1][x1])
+        console.log(this.board[y2][x2])
+        this.board[y2][x2] = this.board[y1][x1]
+        this.board[y1][x1] = { color: colors.NONE, piece: pieces.NONE }
+        console.log(this.board[y1][x1])
+        console.log(this.board[y2][x2])
+    }
+
     async save() {
+        console.log(this.board)
         await redis.hset(`id:${this.id}`, 'game', this.game)
         await redis.hset(`id:${this.id}`, 'bsize', this.boardSize.toString())
         await redis.hset(`id:${this.id}`, 'pstyle', this.pieceStyle)
-        await redis.hset(`id:${this.id}`, 'pmargin', this.pieceMargin.toString())
+        await redis.hset(
+            `id:${this.id}`,
+            'pmargin',
+            this.pieceMargin.toString()
+        )
         await redis.hset(`id:${this.id}`, 'board', JSON.stringify(this.board))
     }
 

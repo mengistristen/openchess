@@ -12,28 +12,26 @@ app.use(express.static('public'))
 */
 app.get('/new', async (req, res) => {
     try {
-        let s = {
-            game: req.query.game || "chess",
+        let options = {
+            game: req.query.game || 'chess',
             boardSize: req.query.bsize || 400,
-            pieceStyle: req.query.pstyle || "style1",
-            pieceMargin: req.query.pmargin || 5
+            pieceStyle: req.query.pstyle || 'style1',
+            pieceMargin: req.query.pmargin || 5,
         }
 
-        if (s.game !== 'chess')
-            throw { message: 'Invalid generator' }
+        if (options.game !== 'chess') throw { message: 'Invalid generator' }
 
-        let board = new Board(s)
+        let board = new Board(options)
 
         await board.save()
 
         res.status(201).send({
             id: board.id,
-            options: s
+            options,
         })
-    }
-    catch (err) {
+    } catch (err) {
         res.send({
-            message: err.message
+            message: err.message,
         })
     }
 })
@@ -49,10 +47,9 @@ app.get('/game/:id', async (req, res) => {
         const board = await Board.getBoardById(req.params.id)
 
         res.send(board.render())
-    }
-    catch (err) {
+    } catch (err) {
         res.send({
-            message: err.message
+            message: err.message,
         })
     }
 })
@@ -63,7 +60,7 @@ app.get('/game/:id', async (req, res) => {
     Purpose: This route is used to move a piece
         on a board specified by an id.
 */
-app.get('/game/:id/:from-:to', (req, res) => {
+app.get('/game/:id/:from-:to', async (req, res) => {
     try {
         const { from, to, id } = req.params
         let coordinate = /[A-H][1-8]/
@@ -71,16 +68,26 @@ app.get('/game/:id/:from-:to', (req, res) => {
         if (!coordinate.test(from) || !coordinate.test(to))
             throw { message: 'Invalid coordinates' }
 
-        const board = Board.getBoardById(id)
+        const board = await Board.getBoardById(id)
+
+        board.movePiece(
+            from.charCodeAt(0) - 'A'.charCodeAt(),
+            7 - (Number.parseInt(from[1]) - 1),
+            to.charCodeAt(0) - 'A'.charCodeAt(),
+            7 - (Number.parseInt(to[1]) - 1)
+        )
+
+        await board.save()
 
         res.send({ from, to })
-    }
-    catch (err) {
+    } catch (err) {
         res.send({
-            message: err.message
+            message: err.message,
         })
     }
 })
 
 const PORT = 8000
-app.listen(PORT, () => console.log(`Server listening at http://localhost:${PORT}`))
+app.listen(PORT, () =>
+    console.log(`Server listening at http://localhost:${PORT}`)
+)
