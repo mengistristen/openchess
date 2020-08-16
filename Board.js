@@ -97,8 +97,8 @@ class Board {
                     (x % 2 === 0 && y % 2 === 1) ||
                     (x % 2 === 1 && y % 2 === 0)
                 )
-                    color = 'rgb(0,0,0)'
-                else color = 'rgb(255,0,0)'
+                    color = 'rgb(78,29,12)'
+                else color = 'rgb(244,225,195)'
 
                 inner += `<rect 
                             x='${x * tileSize}' 
