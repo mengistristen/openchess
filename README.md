@@ -41,8 +41,8 @@
     <!-- PUT S3 DOCS HERE <a href="https://github.com/mengistristen/openchess"><strong>Explore the docs »</strong></a>
     <br />-->
     <br />
-    <!-- PUT S3 DEMO HERE <a href="https://github.com/github_username/repo">View Demo</a>-->
-    <!--·-->
+    <!-- PUT S3 DEMO HERE <a href="https://github.com/github_username/repo">View Demo</a>
+    ·-->
     <a href="https://github.com/mengistristen/openchess/issues">Report Bug</a>
     ·
     <a href="https://github.com/mengistristen/openchess/issues">Request Feature</a>
@@ -93,8 +93,8 @@ openchess is a public REST API. That means **no authorization** is needed.
 There are endless ways to use openchess, we encourage you experiment, just remember to report any [issues](https://github.com/mengistristen/openchess/issues) you come across!
 
 Before you can send commands and recieve svgs you must start a game, do so with a `GET` request to the following URI:
-```http
-GET oc.justinboehnen.com/new
+```bash
+curl "oc.justinboehnen.com/new"
 ```
 If successful, you will get a json object with your new game key. This key will be used in all request that involve this game, so make sure to save it.
 You can start as many games as you like, just keep in mind that latency may be introduced if we recieve too much traffic.
@@ -110,8 +110,8 @@ Now that you've [started a game](#getting-started) you probably want to know [ho
 ### Manually Ending A Game
     
 openchess games automatically expire after **1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with a `GET` request to the following URI:
-```http
-GET oc.justinboehnen.com/game/<game_key>/end
+```bash
+curl "oc.justinboehnen.com/game/f29ce0d6-0678-4cb1-ad60-ad448e3cd5af/end"
 ```
 
 ## Customization and Options
@@ -126,8 +126,8 @@ GET oc.justinboehnen.com/game/<game_key>/end
 
 ### Game Type
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
-```http
-GET oc.justinboehnen.com/new%game=<game_id>
+```bash
+curl "oc.justinboehnen.com/new?game=amazons"
 ```
 
 Here is the list of all supported games:
@@ -137,11 +137,6 @@ Here is the list of all supported games:
 | [Chess](https://en.m.wikipedia.org/wiki/Chess) | `chess` |
 | [Checkers/Draughts](https://en.m.wikipedia.org/wiki/Draughts) | `checkers` |
 | [Amazons](https://en.m.wikipedia.org/wiki/Game_of_the_Amazons) | `amazons` |
-
-Example:
-```http
-GET oc.justinboehnen.com/new%game=amazons
-```
 
 <!---   #### Checkers
 ```http
