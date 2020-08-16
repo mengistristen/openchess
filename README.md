@@ -93,7 +93,7 @@ openchess is a public REST API. That means **no authorization** is needed.
 There are endless ways to use openchess, we encourage you experiment, just remember to report any [issues](https://github.com/mengistristen/openchess/issues) you come across!
 
 Before you can send commands and recieve svgs you must start a game, do so with a `GET` request to the following URI:
-<img src="https://user-images.githubusercontent.com/33167265/90324202-903bb100-df20-11ea-8655-4603c5e16a6d.png" height="200"/>
+<img src="https://user-images.githubusercontent.com/33167265/90324202-903bb100-df20-11ea-8655-4603c5e16a6d.png"/>
 
 If successful, you will get a json object with your new game key. 
 This key will be used in all request that involve this game, so make sure to save it.
@@ -108,7 +108,7 @@ The above request is the most straightforward way to begin a game of **chess**. 
 ### Manually Ending A Game
     
 openchess games automatically expire after **1 hour of inactivity**. However, if you feel so inclined to remove a game earlier you may do so with a `GET` request to the following URI:
-<img src="https://user-images.githubusercontent.com/33167265/90324114-63d36500-df1f-11ea-9d3c-c2795750e861.png" height="200"/>
+<img src="https://user-images.githubusercontent.com/33167265/90324114-63d36500-df1f-11ea-9d3c-c2795750e861.png"/>
 
 ## Customization and Options
 <!--
@@ -123,7 +123,7 @@ openchess games automatically expire after **1 hour of inactivity**. However, if
 ### Game Type
 Despite the name, openchess actually supports playing any game that uses an 8x8 checkerboard (that we've implemented). Here's how you do it:
 
-<img src="https://user-images.githubusercontent.com/33167265/90324230-d98c0080-df20-11ea-9427-31b98c0f556b.png" height="200"/>
+<img src="https://user-images.githubusercontent.com/33167265/90324230-d98c0080-df20-11ea-9427-31b98c0f556b.png"/>
 
 Here is the list of all supported games:
 
