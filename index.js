@@ -1,6 +1,5 @@
 const express = require('express')
 const Board = require('./Board')
-
 const app = express()
 
 //Serve the documentation site statically
@@ -13,19 +12,26 @@ app.use(express.static('public'))
 */
 app.get('/new', async (req, res) => {
     try {
-        const { size } = req.query
-        const generator = req.query.generator || 'chess'
+        let s = {
+            game: req.query.game || "chess",
+            boardSize: req.query.bsize || 400,
+            pieceStyle: req.query.pstyle || "style1",
+            pieceMargin: req.query.pmargin || 5
+        }
 
-        if (generator !== 'chess')
+        if (s.game !== 'chess')
             throw { message: 'Invalid generator' }
 
-        let board = new Board(Number.parseInt(size) || 400, generator)
+        let board = new Board(s)
 
         await board.save()
 
         res.status(201).send({
             id: board.id,
-            size: board.boardSize
+            game: s.game,
+            boardSize: parseInt(s.boardSize),
+            pieceStyle: s.pieceStyle,
+            pieceMargin: parseInt(s.pieceMargin),
         })
     }
     catch (err) {
@@ -44,7 +50,7 @@ app.get('/new', async (req, res) => {
 app.get('/game/:id', async (req, res) => {
     try {
         const board = await Board.getBoardById(req.params.id)
-    
+
         res.send(board.render())
     }
     catch (err) {
@@ -64,13 +70,13 @@ app.get('/game/:id/:from-:to', (req, res) => {
     try {
         const { from, to, id } = req.params
         let coordinate = /[A-H][1-8]/
-        
-        if(!coordinate.test(from) || !coordinate.test(to))
+
+        if (!coordinate.test(from) || !coordinate.test(to))
             throw { message: 'Invalid coordinates' }
-        
+
         const board = Board.getBoardById(id)
 
-        res.send({from, to})
+        res.send({ from, to })
     }
     catch (err) {
         res.send({
@@ -79,4 +85,5 @@ app.get('/game/:id/:from-:to', (req, res) => {
     }
 })
 
-app.listen(8000, () => console.log('Server listening at http://localhost:8000'))
+const PORT = 8000
+app.listen(PORT, () => console.log(`Server listening at http://localhost:${PORT}`))
