@@ -164,8 +164,19 @@ We are always looking to add new games to openchess, if you have a suggestion fo
 ### Board Options
 
 #### Size
+Board size is changed with the `bsize` attribute. 
+```bash
+curl oc.justinboehnen.com/new?bsize=400
+```
 
 #### Color
+Board color is changed with the `blight` and `bdark` attributes, representing the light and dark tones of the board respectively.
+```bash
+curl oc.justinboehnen.com/new?blight=%23ecf0f1&bdark=rgb(66,66,66)
+```
+Hex color codes and RGB values are both valid inputs.
+- The hash (`#`) in hex codes must be encoded as **%23**.
+- RGB values must be sent in the format `rgb(R,G,B)`
 
 #### Frame
 
@@ -174,6 +185,10 @@ We are always looking to add new games to openchess, if you have a suggestion fo
 #### Style
 
 #### Margin
+Piece margin (the spacing between pieces) is changed with the `pmargin` attribute. 
+```bash
+curl oc.justinboehnen.com/new?pmargin=10
+```
 
 ### Coordinates
 
