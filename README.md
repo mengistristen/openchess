@@ -61,10 +61,14 @@
     -   [Manually Ending A Game](#manually-ending-a-game)
 -   [Customization and Options](#customization-and-options)
     -   [Game Type](#game-type)
-    -   [Board Size](#board-size)
-    -   [Board Color](#board-color)
-    -   [Board Frame](#board-frame)
-    -   [Piece Style](#piece-style)
+    -   [Board Options](#board-options)
+        -   [Size](#size)
+        -   [Color](#color)
+        -   [Frame](#frame)
+    -   [Piece Options](#piece-options)
+        -   [Style](#style)
+        -   [Margin](#margin)
+    -   [Coordinates](#coordinates)
 -   [Roadmap](#roadmap)
 -   [Contributing](#contributing)
 -   [License](#license)
@@ -157,15 +161,21 @@ openchess.com/new%game=zpo
 ```-->
 We are always looking to add new games to openchess, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
 
-### Board Size
+### Board Options
 
-### Board Color
+#### Size
 
-### Board Frame
+#### Color
 
-### Piece Style
+#### Frame
 
-### Piece Margin
+### Piece Options
+
+#### Style
+
+#### Margin
+
+### Coordinates
 
 ## Roadmap
 
