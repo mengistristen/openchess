@@ -61,10 +61,14 @@
     -   [Manually Ending A Game](#manually-ending-a-game)
 -   [Customization and Options](#customization-and-options)
     -   [Game Type](#game-type)
-    -   [Board Size](#board-size)
-    -   [Board Color](#board-color)
-    -   [Board Frame](#board-frame)
-    -   [Piece Style](#piece-style)
+    -   [Board Options](#board-options)
+        -   [Size](#size)
+        -   [Color](#color)
+        -   [Frame](#frame)
+    -   [Piece Options](#piece-options)
+        -   [Style](#style)
+        -   [Margin](#margin)
+    -   [Coordinates](#coordinates)
 -   [Roadmap](#roadmap)
 -   [Contributing](#contributing)
 -   [License](#license)
@@ -157,15 +161,36 @@ openchess.com/new%game=zpo
 ```-->
 We are always looking to add new games to openchess, if you have a suggestion for one please leave it [here](https://github.com/mengistristen/openchess/issues) or better yet, do it yourself by [contributing](#contributing).
 
-### Board Size
+### Board Options
 
-### Board Color
+#### Size
+Board size is changed with the `bsize` attribute. 
+```bash
+curl oc.justinboehnen.com/new?bsize=400
+```
 
-### Board Frame
+#### Color
+Board color is changed with the `blight` and `bdark` attributes, representing the light and dark tones of the board respectively.
+```bash
+curl oc.justinboehnen.com/new?blight=%23ecf0f1&bdark=rgb(66,66,66)
+```
+Hex color codes and RGB values are both valid inputs.
+- The hash (`#`) in hex codes must be encoded as **%23**.
+- RGB values must be sent in the format `rgb(R,G,B)`
 
-### Piece Style
+#### Frame
 
-### Piece Margin
+### Piece Options
+
+#### Style
+
+#### Margin
+Piece margin (the spacing between pieces) is changed with the `pmargin` attribute. 
+```bash
+curl oc.justinboehnen.com/new?pmargin=10
+```
+
+### Coordinates
 
 ## Roadmap
 

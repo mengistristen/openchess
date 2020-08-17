@@ -6,3 +6,4 @@ client.on('error', (err) => console.log(err))
 
 module.exports.hset = promisify(client.hset).bind(client)
 module.exports.hget = promisify(client.hget).bind(client)
+module.exports.hexists = promisify(client.hexists).bind(client)
