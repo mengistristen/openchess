@@ -14,11 +14,20 @@ app.get('/new', async (req, res) => {
     try {
         let options = {
             game: req.query.game || 'chess',
-            boardSize: req.query.bsize || 400,
-            boardDarkColor: req.query.bdark || "rgb(222,222,222)", //hex or rgb, encode hex in request with %23
-            boardLightColor: req.query.blight || "rgb(36,36,36)",
+            boardSize: parseInt(req.query.bsize) || 400,
+            boardDarkColor: req.query.bdark || 'rgb(222,222,222)',  //hex or rgb, encode hex in request with %23
+            boardLightColor: req.query.blight || 'rgb(36,36,36)',
             pieceStyle: req.query.pstyle || 'style1',
-            pieceMargin: req.query.pmargin || 5,
+            pieceMargin: parseInt(req.query.pmargin) || 5,
+            coordinates: {
+                show: (req.query.cshow == "true") || false,
+                color: req.query.ccolor || 'rgb(106,132,167)',
+                fontFamily: req.query.cfont || 'Georgia',           //https://websitesetup.org/web-safe-fonts-html-css/
+                fontSize: parseInt(req.query.csize) || 13,
+                fontStyle: req.query.cstyle || 'italic',            //https://www.w3schools.com/cssref/pr_font_font-style.asp
+                fontWeight: req.query.cweight || 'normal',          //https://www.w3schools.com/cssref/pr_font_weight.asp
+                margin: parseInt(req.query.cmargin) || 5
+            }
         }
 
         if (options.game !== 'chess') throw { message: 'Invalid game type' }
