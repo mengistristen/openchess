@@ -98,6 +98,24 @@ app.get('/game/:id/:from-:to', async (req, res) => {
     }
 })
 
+/*
+    Method: GET
+    Route: /game/:id/reset
+    Purpose: This route is used to reset a game to its
+        original state.
+*/
+app.get('/game/:id/reset', async (req, res) => {
+    try {
+        const board = await Board.resetBoard(req.params.id)
+
+        res.send(board.render())
+    } catch (err) {
+        res.send({
+            message: err.message,
+        })
+    }
+})
+
 //get /logo returns logo png
 //get /rules/chess
 

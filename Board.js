@@ -220,10 +220,21 @@ class Board {
             throw { message: 'Invalid game id' }
 
         const options = JSON.parse(await redis.hget(`id:${id}`, 'options'))
-
         const board = new Board(options, id)
 
         board.board = JSON.parse(await redis.hget(`id:${id}`, 'board'))
+
+        return board
+    }
+
+    static async resetBoard(id) {
+        if (!redis.hexists(`id:${id}`, 'board'))
+            throw { message: 'Invalid game id' }
+
+        const options = JSON.parse(await redis.hget(`id:${id}`, 'options'))
+        const board = new Board(options, id)
+
+        await board.save()
 
         return board
     }
