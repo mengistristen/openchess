@@ -2,6 +2,7 @@
     Purpose: This is the definition file for the board class.
 */
 const redis = require('./redisClient')
+const { json } = require('express')
 
 const pieces = {
     NONE: 'none',
@@ -34,16 +35,13 @@ const mainRow = [
 ]
 
 class Board {
-    constructor(options) {
-        this.game = options.game
-        this.boardSize = options.boardSize
-        this.boardDarkColor = options.boardDarkColor
-        this.boardLightColor = options.boardLightColor
-        this.pieceStyle = options.pieceStyle
-        this.pieceMargin = options.pieceMargin
+    constructor(s) {
+        console.log
+
+        this.options = s
         this.id = Date.now().toString().slice(4, -1)
 
-        if (this.game === 'chess') this.board = this.generateChessBoard()
+        if (this.options.game === 'chess') this.board = this.generateChessBoard()
     }
 
     generateChessBoard() {
@@ -83,9 +81,75 @@ class Board {
         return board
     }
 
+    drawCoordinates(inner, x, y) {
+        let tileSize = this.options.boardSize / 8
+        let x2
+        let y2
+        let anchor
+        let baseline
+        let output
+
+        if (y == 0) {
+            x2 = `${(x * tileSize) + (tileSize / 2)}`
+            y2 = `${0 + this.options.coordinates.margin}`
+            baseline = 'hanging'
+            anchor = 'middle'
+        }
+        else if (y == 7) {
+            x2 = `${(x * tileSize) + (tileSize / 2)}`
+            y2 = `${8 * tileSize - this.options.coordinates.margin}`
+            baseline = 'baseline'
+            anchor = 'middle'
+        }
+        if (y == 0 || y == 7) {
+            output += `<text 
+            x='${x2}' 
+            y='${y2}' 
+            alignment-baseline='${baseline}'
+            style='
+                text-anchor:${anchor};
+                fill:${this.options.coordinates.color};
+                font-family:${this.options.coordinates.fontFamily};
+                font-size:${this.options.coordinates.fontSize};
+                font-style:${this.options.coordinates.fontStyle};
+                font-weight:${this.options.coordinates.fontWeight}'
+            >${String.fromCharCode('A'.charCodeAt(0) + x)}</text>`
+        }
+
+
+        if (x == 0) {
+            x2 = `${0 + this.options.coordinates.margin}`
+            y2 = `${(y * tileSize) + (tileSize / 2)}`
+            baseline = 'middle'
+            anchor = 'start'
+        }
+        else if (x == 7) {
+            x2 = `${8 * tileSize - this.options.coordinates.margin}`
+            y2 = `${(y * tileSize) + (tileSize / 2)}`
+            baseline = 'middle'
+            anchor = 'end'
+        }
+        if (x == 0 || x == 7) {
+            output += `<text 
+            x='${x2}' 
+            y='${y2}' 
+            alignment-baseline='${baseline}'
+            style='
+                text-anchor:${anchor};
+                fill:${this.options.coordinates.color};
+                font-family:${this.options.coordinates.fontFamily};
+                font-size:${this.options.coordinates.fontSize};
+                font-style:${this.options.coordinates.fontStyle};
+                font-weight:${this.options.coordinates.fontWeight}'
+            >${8 - y}</text>`
+        }
+
+        return output
+    }
+
     render() {
         console.log('in render')
-        let tileSize = this.boardSize / 8
+        let tileSize = this.options.boardSize / 8
         let inner = ''
 
         for (let y = 0; y < 8; ++y) {
@@ -97,9 +161,10 @@ class Board {
                     (x % 2 === 0 && y % 2 === 1) ||
                     (x % 2 === 1 && y % 2 === 0)
                 )
-                    color = this.boardDarkColor
-                else color = this.boardLightColor
+                    color = this.options.boardDarkColor
+                else color = this.options.boardLightColor
 
+                // background (board)
                 inner += `<rect 
                             x='${x * tileSize}' 
                             y='${y * tileSize}' 
@@ -107,21 +172,27 @@ class Board {
                             height='${tileSize}'
                             style="fill:${color}" />` //;stroke-width:3;stroke:rgb(255,0,0)" />`
 
+                // middleground (pieces)
                 if (pieceData.piece !== pieces.NONE) {
+                    console.log("drawing piece: " + pieceData.piece + "\tcolor: " + pieceData.color + "\tmargin: " + this.options.pieceMargin)
                     inner += `<image 
-                                    x='${x * tileSize + this.pieceMargin}' 
-                                    y='${y * tileSize + this.pieceMargin}' 
-                                    width='${tileSize - this.pieceMargin * 2}' 
-                                    height='${tileSize - this.pieceMargin * 2}' 
+                                    x='${x * tileSize + this.options.pieceMargin}' 
+                                    y='${y * tileSize + this.options.pieceMargin}' 
+                                    width='${tileSize - this.options.pieceMargin * 2}' 
+                                    height='${tileSize - this.options.pieceMargin * 2}' 
                                     href='https://openchess.s3-us-west-2.amazonaws.com/${
                         pieceData.piece
                         }_${pieceData.color}.svg' 
                                 />`
                 }
+
+                // foreground (coordinates)
+                if (this.options.coordinates.show)
+                    inner += this.drawCoordinates(inner, x, y)
             }
         }
 
-        return `<svg xmlns='https://www.w3.org/2000/svg' width='${this.boardSize}' height='${this.boardSize}'>
+        return `<svg xmlns='https://www.w3.org/2000/svg' width='${this.options.boardSize}' height='${this.options.boardSize}'>
             ${inner}
         </svg>`
     }
@@ -137,35 +208,19 @@ class Board {
     }
 
     async save() {
-        console.log(this.board)
-        await redis.hset(`id:${this.id}`, 'game', this.game)
-        await redis.hset(`id:${this.id}`, 'bsize', this.boardSize.toString())
-        await redis.hset(`id:${this.id}`, 'bdark', this.boardDarkColor)
-        await redis.hset(`id:${this.id}`, 'blight', this.boardLightColor)
-        await redis.hset(`id:${this.id}`, 'pstyle', this.pieceStyle)
-        await redis.hset(
-            `id:${this.id}`,
-            'pmargin',
-            this.pieceMargin.toString()
-        )
+        await redis.hset(`id:${this.id}`, 'options', JSON.stringify(this.options))
         await redis.hset(`id:${this.id}`, 'board', JSON.stringify(this.board))
     }
 
     static async getBoardById(id) {
-        const game = await redis.hget(`id:${id}`, 'game')
+        let s = JSON.parse(await redis.hget(`id:${id}`, 'options'))
 
-        if (game === null) throw { message: 'Invalid game id' }
+        //console.log(`--------------------\ngot board options:\n${JSON.stringify(s, null, 2)}\nfrom id: ${id}\n--------------------`)
 
-        let s = {
-            game: game,
-            boardSize: parseInt(await redis.hget(`id:${id}`, 'bsize')),
-            boardDarkColor: await redis.hget(`id:${id}`, 'bdark'),
-            boardLightColor: await redis.hget(`id:${id}`, 'blight'),
-            pieceStyle: await redis.hget(`id:${id}`, 'pstyle'),
-            pieceMargin: parseInt(await redis.hget(`id:${id}`, 'pmargin')),
-        }
+        if (s.game === null) throw { message: 'Invalid game id' }
 
         const board = new Board(s)
+
         board.board = JSON.parse(await redis.hget(`id:${id}`, 'board'))
 
         return board
