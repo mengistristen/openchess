@@ -35,17 +35,17 @@ const mainRow = [
 ]
 
 class Board {
-    constructor(s) {
-        console.log
+    constructor(options, id) {
+        this.options = options
 
-        this.options = s
-        this.id = Date.now().toString().slice(4, -1)
+        if (!id) this.id = Date.now().toString().slice(4, -1)
+        else this.id = id
 
-        if (this.options.game === 'chess') this.board = this.generateChessBoard()
+        if (this.options.game === 'chess')
+            this.board = this.generateChessBoard()
     }
 
     generateChessBoard() {
-        console.log('in generate chess board')
         const board = Array(8)
 
         //Setup black side
@@ -90,13 +90,12 @@ class Board {
         let output
 
         if (y == 0) {
-            x2 = `${(x * tileSize) + (tileSize / 2)}`
+            x2 = `${x * tileSize + tileSize / 2}`
             y2 = `${0 + this.options.coordinates.margin}`
             baseline = 'hanging'
             anchor = 'middle'
-        }
-        else if (y == 7) {
-            x2 = `${(x * tileSize) + (tileSize / 2)}`
+        } else if (y == 7) {
+            x2 = `${x * tileSize + tileSize / 2}`
             y2 = `${8 * tileSize - this.options.coordinates.margin}`
             baseline = 'baseline'
             anchor = 'middle'
@@ -116,16 +115,14 @@ class Board {
             >${String.fromCharCode('A'.charCodeAt(0) + x)}</text>`
         }
 
-
         if (x == 0) {
             x2 = `${0 + this.options.coordinates.margin}`
-            y2 = `${(y * tileSize) + (tileSize / 2)}`
+            y2 = `${y * tileSize + tileSize / 2}`
             baseline = 'middle'
             anchor = 'start'
-        }
-        else if (x == 7) {
+        } else if (x == 7) {
             x2 = `${8 * tileSize - this.options.coordinates.margin}`
-            y2 = `${(y * tileSize) + (tileSize / 2)}`
+            y2 = `${y * tileSize + tileSize / 2}`
             baseline = 'middle'
             anchor = 'end'
         }
@@ -148,7 +145,6 @@ class Board {
     }
 
     render() {
-        console.log('in render')
         let tileSize = this.options.boardSize / 8
         let inner = ''
 
@@ -174,15 +170,23 @@ class Board {
 
                 // middleground (pieces)
                 if (pieceData.piece !== pieces.NONE) {
-                    console.log("drawing piece: " + pieceData.piece + "\tcolor: " + pieceData.color + "\tmargin: " + this.options.pieceMargin)
+                    //console.log('drawing piece: ' + pieceData.piece + '\tcolor: ' + pieceData.color + '\tmargin: ' + this.options.pieceMargin)
                     inner += `<image 
-                                    x='${x * tileSize + this.options.pieceMargin}' 
-                                    y='${y * tileSize + this.options.pieceMargin}' 
-                                    width='${tileSize - this.options.pieceMargin * 2}' 
-                                    height='${tileSize - this.options.pieceMargin * 2}' 
+                                    x='${
+                                        x * tileSize + this.options.pieceMargin
+                                    }' 
+                                    y='${
+                                        y * tileSize + this.options.pieceMargin
+                                    }' 
+                                    width='${
+                                        tileSize - this.options.pieceMargin * 2
+                                    }' 
+                                    height='${
+                                        tileSize - this.options.pieceMargin * 2
+                                    }' 
                                     href='https://openchess.s3-us-west-2.amazonaws.com/${
-                        pieceData.piece
-                        }_${pieceData.color}.svg' 
+                                        pieceData.piece
+                                    }_${pieceData.color}.svg' 
                                 />`
                 }
 
@@ -198,28 +202,26 @@ class Board {
     }
 
     movePiece(x1, y1, x2, y2) {
-        console.log({ x1, y1, x2, y2 })
-        console.log(this.board[y1][x1])
-        console.log(this.board[y2][x2])
         this.board[y2][x2] = this.board[y1][x1]
         this.board[y1][x1] = { color: colors.NONE, piece: pieces.NONE }
-        console.log(this.board[y1][x1])
-        console.log(this.board[y2][x2])
     }
 
     async save() {
-        await redis.hset(`id:${this.id}`, 'options', JSON.stringify(this.options))
+        await redis.hset(
+            `id:${this.id}`,
+            'options',
+            JSON.stringify(this.options)
+        )
         await redis.hset(`id:${this.id}`, 'board', JSON.stringify(this.board))
     }
 
     static async getBoardById(id) {
-        let s = JSON.parse(await redis.hget(`id:${id}`, 'options'))
+        if (!redis.hexists(`id:${id}`, 'board'))
+            throw { message: 'Invalid game id' }
 
-        //console.log(`--------------------\ngot board options:\n${JSON.stringify(s, null, 2)}\nfrom id: ${id}\n--------------------`)
+        const options = JSON.parse(await redis.hget(`id:${id}`, 'options'))
 
-        if (s.game === null) throw { message: 'Invalid game id' }
-
-        const board = new Board(s)
+        const board = new Board(options, id)
 
         board.board = JSON.parse(await redis.hget(`id:${id}`, 'board'))
 

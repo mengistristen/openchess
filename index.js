@@ -15,26 +15,22 @@ app.get('/new', async (req, res) => {
         let options = {
             game: req.query.game || 'chess',
             boardSize: parseInt(req.query.bsize) || 400,
-            boardDarkColor: req.query.bdark || 'rgb(222,222,222)',  //hex or rgb, encode hex in request with %23
+            boardDarkColor: req.query.bdark || 'rgb(222,222,222)', //hex or rgb, encode hex in request with %23
             boardLightColor: req.query.blight || 'rgb(36,36,36)',
             pieceStyle: req.query.pstyle || 'style1',
             pieceMargin: parseInt(req.query.pmargin) || 5,
             coordinates: {
-                show: (req.query.cshow == "true") || false,
+                show: req.query.cshow == 'true' || false,
                 color: req.query.ccolor || 'rgb(106,132,167)',
-                fontFamily: req.query.cfont || 'Georgia',           //https://websitesetup.org/web-safe-fonts-html-css/
+                fontFamily: req.query.cfont || 'Georgia', //https://websitesetup.org/web-safe-fonts-html-css/
                 fontSize: parseInt(req.query.csize) || 13,
-                fontStyle: req.query.cstyle || 'italic',            //https://www.w3schools.com/cssref/pr_font_font-style.asp
-                fontWeight: req.query.cweight || 'normal',          //https://www.w3schools.com/cssref/pr_font_weight.asp
-                margin: parseInt(req.query.cmargin) || 5
-            }
+                fontStyle: req.query.cstyle || 'italic', //https://www.w3schools.com/cssref/pr_font_font-style.asp
+                fontWeight: req.query.cweight || 'normal', //https://www.w3schools.com/cssref/pr_font_weight.asp
+                margin: parseInt(req.query.cmargin) || 5,
+            },
         }
 
-<<<<<<< HEAD
-        if (generator !== 'chess') throw { message: 'Invalid generator' }
-=======
         if (options.game !== 'chess') throw { message: 'Invalid game type' }
->>>>>>> 74bb542bf1786fb4b5336191e860f1b2a3023440
 
         let board = new Board(options)
 
@@ -42,11 +38,7 @@ app.get('/new', async (req, res) => {
 
         res.status(201).send({
             id: board.id,
-<<<<<<< HEAD
-            size: board.boardSize,
-=======
             options,
->>>>>>> 74bb542bf1786fb4b5336191e860f1b2a3023440
         })
     } catch (err) {
         res.send({
@@ -86,11 +78,6 @@ app.get('/game/:id/:from-:to', async (req, res) => {
 
         if (!coordinate.test(from) || !coordinate.test(to))
             throw { message: 'Invalid coordinates' }
-<<<<<<< HEAD
-
-        const board = Board.getBoardById(id)
-
-=======
 
         const board = await Board.getBoardById(id)
 
@@ -103,8 +90,7 @@ app.get('/game/:id/:from-:to', async (req, res) => {
 
         await board.save()
 
->>>>>>> 74bb542bf1786fb4b5336191e860f1b2a3023440
-        res.send({ from, to })
+        res.send(board.render())
     } catch (err) {
         res.send({
             message: err.message,
@@ -112,9 +98,6 @@ app.get('/game/:id/:from-:to', async (req, res) => {
     }
 })
 
-<<<<<<< HEAD
-app.listen(8000, () => console.log('Server listening at http://localhost:8000'))
-=======
 //get /logo returns logo png
 //get /rules/chess
 
@@ -122,4 +105,3 @@ const PORT = 8000
 app.listen(PORT, () =>
     console.log(`Server listening at http://localhost:${PORT}`)
 )
->>>>>>> 74bb542bf1786fb4b5336191e860f1b2a3023440
