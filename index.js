@@ -2,6 +2,8 @@ const express = require('express')
 const Board = require('./Board')
 const app = express()
 
+const coordinate = /[A-H][1-8]/
+
 //Serve the documentation site statically
 app.use(express.static('public'))
 
@@ -74,10 +76,16 @@ app.get('/game/:id', async (req, res) => {
 app.get('/game/:id/:from-:to', async (req, res) => {
     try {
         const { from, to, id } = req.params
-        let coordinate = /[A-H][1-8]/
 
-        if (!coordinate.test(from) || !coordinate.test(to))
-            throw { message: 'Invalid coordinates' }
+        if (!coordinate.test(from))
+            throw {
+                message: `Invalid from coordinate: ${from}, expected to match [A-H][1-8]`,
+            }
+
+        if (!coordinate.test(to))
+            throw {
+                message: `Invalid to coordinate: ${to}, expected to match [A-H][1-8]`,
+            }
 
         const board = await Board.getBoardById(id)
 
@@ -107,6 +115,39 @@ app.get('/game/:id/:from-:to', async (req, res) => {
 app.get('/game/:id/reset', async (req, res) => {
     try {
         const board = await Board.resetBoard(req.params.id)
+
+        res.send(board.render())
+    } catch (err) {
+        res.send({
+            message: err.message,
+        })
+    }
+})
+
+/* 
+    Method: GET
+    Route: /game/:id/set/:tile-:color-:piece
+    Purpose: This route is used to set a new piece onto
+        a specific tile on the board.
+*/
+app.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
+    try {
+        const { id, tile, color, piece } = req.params
+
+        if (!coordinate.test(tile))
+            throw {
+                message: `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`,
+            }
+
+        const board = await Board.getBoardById(id)
+
+        board.setPiece(
+            tile.charCodeAt(0) - 'A'.charCodeAt(),
+            7 - (Number.parseInt(tile[1]) - 1),
+            color,
+            piece
+        )
+        await board.save()
 
         res.send(board.render())
     } catch (err) {
