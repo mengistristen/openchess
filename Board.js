@@ -19,7 +19,7 @@ class Board {
 
     generateChessBoard() {
         const board = Array(8)
-        console.log(mainRow)
+
         //Setup black side
         board[0] = mainRow.map((piece) => {
             return { color: colors.BLACK, piece }
