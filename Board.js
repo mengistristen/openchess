@@ -202,6 +202,9 @@ class Board {
     }
 
     movePiece(x1, y1, x2, y2) {
+        if (this.board[y1][x1].piece === pieces.NONE)
+            throw { message: "Can't move piece from empty cell" }
+
         this.board[y2][x2] = this.board[y1][x1]
         this.board[y1][x1] = { color: colors.NONE, piece: pieces.NONE }
     }
