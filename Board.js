@@ -43,6 +43,8 @@ class Board {
 
         if (this.options.game === 'chess')
             this.board = this.generateChessBoard()
+        else if (this.options.game === 'none')
+            this.board = this.generateEmptyBoard()
     }
 
     generateChessBoard() {
@@ -79,6 +81,14 @@ class Board {
         })
 
         return board
+    }
+
+    generateEmptyBoard() {
+        return [...Array(8)].map(() =>
+            [...Array(8)].map(() => {
+                return { color: colors.NONE, piece: pieces.NONE }
+            })
+        )
     }
 
     drawCoordinates(inner, x, y) {

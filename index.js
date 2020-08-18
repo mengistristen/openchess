@@ -32,7 +32,8 @@ app.get('/new', async (req, res) => {
             },
         }
 
-        if (options.game !== 'chess') throw { message: 'Invalid game type' }
+        if (!(options.game !== 'chess' || options.game !== 'none'))
+            throw { message: `Invalid game type: ${options.game}` }
 
         let board = new Board(options)
 
