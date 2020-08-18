@@ -21,6 +21,7 @@ app.get('/new', async (req, res) => {
             boardLightColor: req.query.blight || 'rgb(36,36,36)',
             pieceStyle: req.query.pstyle || 'style1',
             pieceMargin: parseInt(req.query.pmargin) || 5,
+            strict: req.query.strict || 'false',
             coordinates: {
                 show: req.query.cshow == 'true' || false,
                 color: req.query.ccolor || 'rgb(106,132,167)',
@@ -32,7 +33,7 @@ app.get('/new', async (req, res) => {
             },
         }
 
-        if (!(options.game !== 'chess' || options.game !== 'none'))
+        if (options.game !== 'chess' && options.game !== 'none')
             throw { message: `Invalid game type: ${options.game}` }
 
         let board = new Board(options)

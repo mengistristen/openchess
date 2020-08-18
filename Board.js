@@ -2,37 +2,7 @@
     Purpose: This is the definition file for the board class.
 */
 const redis = require('./redisClient')
-const { json } = require('express')
-
-const pieces = {
-    NONE: 'none',
-    PAWN: 'pawn',
-    ROOK: 'rook',
-    BISHOP: 'bishop',
-    KNIGHT: 'knight',
-    QUEEN: 'queen',
-    KING: 'king',
-    STANDARD: 'standard',
-    KINGED: 'kinged',
-}
-
-const colors = {
-    NONE: 'none',
-    WHITE: 'white',
-    BLACK: 'black',
-    RED: 'red',
-}
-
-const mainRow = [
-    pieces.ROOK,
-    pieces.KNIGHT,
-    pieces.BISHOP,
-    pieces.KING,
-    pieces.QUEEN,
-    pieces.BISHOP,
-    pieces.KNIGHT,
-    pieces.ROOK,
-]
+const { pieces, colors, mainRow, empty } = require('./pieces')
 
 class Board {
     constructor(options, id) {
@@ -49,32 +19,24 @@ class Board {
 
     generateChessBoard() {
         const board = Array(8)
-
+        console.log(mainRow)
         //Setup black side
         board[0] = mainRow.map((piece) => {
             return { color: colors.BLACK, piece }
         })
-        board[1] = [...Array(8)].map((item) => {
-            return { color: colors.BLACK, piece: pieces.PAWN }
+        board[1] = [...Array(8)].map(() => {
+            return { color: colors.BLACK, piece: pieces.chess.PAWN }
         })
 
         //Setup empty spaces
-        board[2] = [...Array(8)].map(() => {
-            return { color: colors.NONE, piece: pieces.NONE }
-        })
-        board[3] = [...Array(8)].map(() => {
-            return { color: colors.NONE, piece: pieces.NONE }
-        })
-        board[4] = [...Array(8)].map(() => {
-            return { color: colors.NONE, piece: pieces.NONE }
-        })
-        board[5] = [...Array(8)].map(() => {
-            return { color: colors.NONE, piece: pieces.NONE }
-        })
+        board[2] = [...Array(8)].map(() => empty)
+        board[3] = [...Array(8)].map(() => empty)
+        board[4] = [...Array(8)].map(() => empty)
+        board[5] = [...Array(8)].map(() => empty)
 
         //Setup white side
         board[6] = [...Array(8)].map(() => {
-            return { color: colors.WHITE, piece: pieces.PAWN }
+            return { color: colors.WHITE, piece: pieces.chess.PAWN }
         })
         board[7] = mainRow.map((piece) => {
             return { color: colors.WHITE, piece }
@@ -84,11 +46,7 @@ class Board {
     }
 
     generateEmptyBoard() {
-        return [...Array(8)].map(() =>
-            [...Array(8)].map(() => {
-                return { color: colors.NONE, piece: pieces.NONE }
-            })
-        )
+        return [...Array(8)].map(() => [...Array(8)].map(() => empty))
     }
 
     drawCoordinates(inner, x, y) {
@@ -216,7 +174,7 @@ class Board {
             throw { message: `(${x1},${y1}) contains no piece` }
 
         this.board[y2][x2] = this.board[y1][x1]
-        this.board[y1][x1] = { color: colors.NONE, piece: pieces.NONE }
+        this.board[y1][x1] = empty
     }
 
     setPiece(x, y, color, piece) {
@@ -229,13 +187,20 @@ class Board {
                     .join(', ')}`,
             }
 
-        if (!Object.values(pieces).includes(piece) || piece === pieces.NONE)
+        let validPieces
+
+        if (this.options.strict === 'false' || this.options.game === 'none')
+            validPieces = [
+                ...Object.values(pieces.chess),
+                ...Object.values(pieces.checkers),
+            ]
+        else validPieces = Object.values(pieces[this.options.game])
+
+        if (!validPieces.includes(piece) || piece === pieces.NONE)
             throw {
-                message: `Invalid piece: '${piece}', expected: ${Object.values(
-                    pieces
-                )
-                    .filter((item) => item !== pieces.NONE)
-                    .join(', ')}`,
+                message: `Invalid piece: '${piece}', expected: ${validPieces.join(
+                    ', '
+                )}`,
             }
 
         this.board[y][x] = { color, piece }
