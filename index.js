@@ -2,6 +2,8 @@ const express = require('express')
 const Board = require('./Board')
 const app = express()
 
+const coordinate = /[A-H][1-8]/
+
 //Serve the documentation site statically
 app.use(express.static('public'))
 
@@ -19,6 +21,7 @@ app.get('/new', async (req, res) => {
             boardLightColor: req.query.blight || 'rgb(36,36,36)',
             pieceStyle: req.query.pstyle || 'style1',
             pieceMargin: parseInt(req.query.pmargin) || 5,
+            strict: req.query.strict || 'false',
             coordinates: {
                 show: req.query.cshow == 'true' || false,
                 color: req.query.ccolor || 'rgb(106,132,167)',
@@ -30,7 +33,8 @@ app.get('/new', async (req, res) => {
             },
         }
 
-        if (options.game !== 'chess') throw { message: 'Invalid game type' }
+        if (options.game !== 'chess' && options.game !== 'none')
+            throw { message: `Invalid game type: ${options.game}` }
 
         let board = new Board(options)
 
@@ -74,10 +78,16 @@ app.get('/game/:id', async (req, res) => {
 app.get('/game/:id/:from-:to', async (req, res) => {
     try {
         const { from, to, id } = req.params
-        let coordinate = /[A-H][1-8]/
 
-        if (!coordinate.test(from) || !coordinate.test(to))
-            throw { message: 'Invalid coordinates' }
+        if (!coordinate.test(from))
+            throw {
+                message: `Invalid from coordinate: ${from}, expected to match [A-H][1-8]`,
+            }
+
+        if (!coordinate.test(to))
+            throw {
+                message: `Invalid to coordinate: ${to}, expected to match [A-H][1-8]`,
+            }
 
         const board = await Board.getBoardById(id)
 
@@ -107,6 +117,39 @@ app.get('/game/:id/:from-:to', async (req, res) => {
 app.get('/game/:id/reset', async (req, res) => {
     try {
         const board = await Board.resetBoard(req.params.id)
+
+        res.send(board.render())
+    } catch (err) {
+        res.send({
+            message: err.message,
+        })
+    }
+})
+
+/* 
+    Method: GET
+    Route: /game/:id/set/:tile-:color-:piece
+    Purpose: This route is used to set a new piece onto
+        a specific tile on the board.
+*/
+app.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
+    try {
+        const { id, tile, color, piece } = req.params
+
+        if (!coordinate.test(tile))
+            throw {
+                message: `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`,
+            }
+
+        const board = await Board.getBoardById(id)
+
+        board.setPiece(
+            tile.charCodeAt(0) - 'A'.charCodeAt(),
+            7 - (Number.parseInt(tile[1]) - 1),
+            color,
+            piece
+        )
+        await board.save()
 
         res.send(board.render())
     } catch (err) {
