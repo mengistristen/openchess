@@ -170,6 +170,7 @@ class Board {
     }
 
     movePiece(x1, y1, x2, y2) {
+        //can't move an empty piece onto another spot
         if (this.board[y1][x1].piece === pieces.NONE)
             throw { message: `(${x1},${y1}) contains no piece` }
 
@@ -187,8 +188,11 @@ class Board {
                     .join(', ')}`,
             }
 
+        //check whether or not a piece placement is valid depending on the game
+        //and the strict option
         let validPieces
 
+        //if the game isn't strict or if their is no game, all pieces are valid
         if (this.options.strict === 'false' || this.options.game === 'none')
             validPieces = [
                 ...Object.values(pieces.chess),
