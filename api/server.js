@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const Board = require('../src/Board')
-
-const coordinate = /[A-H][1-8]/
+const Coordinate = require('../src/Coordinate')
 
 /*
     Method: GET
@@ -29,7 +28,11 @@ router.get('/new', async (req, res) => {
             },
         }
 
-        if (options.game !== 'chess' && options.game !== 'none')
+        if (
+            options.game !== 'chess' &&
+            options.game !== 'checkers' &&
+            options.game !== 'none'
+        )
             throw { message: `Invalid game type: ${options.game}` }
 
         let board = new Board(options)
@@ -75,25 +78,21 @@ router.get('/game/:id/:from-:to', async (req, res) => {
     try {
         const { from, to, id } = req.params
 
-        if (!coordinate.test(from))
+        if (!Coordinate.test(from))
             throw {
                 message: `Invalid from coordinate: ${from}, expected to match [A-H][1-8]`,
             }
 
-        if (!coordinate.test(to))
+        if (!Coordinate.test(to))
             throw {
                 message: `Invalid to coordinate: ${to}, expected to match [A-H][1-8]`,
             }
 
         const board = await Board.getBoardById(id)
+        const [x1, y1] = Coordinate.parseCoordinate(from)
+        const [x2, y2] = Coordinate.parseCoordinate(to)
 
-        board.movePiece(
-            from.charCodeAt(0) - 'A'.charCodeAt(),
-            7 - (Number.parseInt(from[1]) - 1),
-            to.charCodeAt(0) - 'A'.charCodeAt(),
-            7 - (Number.parseInt(to[1]) - 1)
-        )
-
+        board.movePiece(x1, y1, x2, y2)
         await board.save()
 
         res.send(board.render())
@@ -132,19 +131,44 @@ router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
     try {
         const { id, tile, color, piece } = req.params
 
-        if (!coordinate.test(tile))
+        if (!Coordinate.test(tile))
             throw {
                 message: `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`,
             }
 
         const board = await Board.getBoardById(id)
+        const [x, y] = Coordinate.parseCoordinate(tile)
 
-        board.setPiece(
-            tile.charCodeAt(0) - 'A'.charCodeAt(),
-            7 - (Number.parseInt(tile[1]) - 1),
-            color,
-            piece
-        )
+        board.setPiece(x, y, color, piece)
+        await board.save()
+
+        res.send(board.render())
+    } catch (err) {
+        res.send({
+            message: err.message,
+        })
+    }
+})
+
+/*
+    Method: GET
+    Route: /game/:id/remove/:tile
+    Purpose: This route is used to remove a piece at the 
+        given spot on the board
+*/
+router.get('/game/:id/remove/:tile', async (req, res) => {
+    try {
+        const { id, tile } = req.params
+
+        if (!Coordinate.test(tile))
+            throw {
+                message: `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`,
+            }
+
+        const board = await Board.getBoardById(id)
+        const [x, y] = Coordinate.parseCoordinate(tile)
+
+        board.removePiece(x, y)
         await board.save()
 
         res.send(board.render())
