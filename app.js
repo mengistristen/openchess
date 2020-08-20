@@ -1,5 +1,5 @@
 const express = require('express')
-const api = require('./api/server')
+const api = require('./api/games')
 
 const app = express()
 
