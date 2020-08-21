@@ -239,30 +239,31 @@ class Board {
 
     async save() {
         await redis.hset(
-            `id:${this.id}`,
+            `game:${this.id}`,
             'options',
             JSON.stringify(this.options)
         )
-        await redis.hset(`id:${this.id}`, 'board', JSON.stringify(this.board))
+        await redis.hset(`game:${this.id}`, 'board', JSON.stringify(this.board))
+        await redis.expire(`game:${this.id}`, 60 * 60)
     }
 
     static async getBoardById(id) {
-        if (!redis.hexists(`id:${id}`, 'board'))
+        if (!(await redis.exists(`game:${id}`)))
             throw { message: `Invalid game id: ${id}` }
 
-        const options = JSON.parse(await redis.hget(`id:${id}`, 'options'))
+        const options = JSON.parse(await redis.hget(`game:${id}`, 'options'))
         const board = new Board(options, id)
 
-        board.board = JSON.parse(await redis.hget(`id:${id}`, 'board'))
+        board.board = JSON.parse(await redis.hget(`game:${id}`, 'board'))
 
         return board
     }
 
     static async resetBoard(id) {
-        if (!redis.hexists(`id:${id}`, 'board'))
+        if (!redis.hexists(`game:${id}`, 'board'))
             throw { message: `Invalid game id: ${id}` }
 
-        const options = JSON.parse(await redis.hget(`id:${id}`, 'options'))
+        const options = JSON.parse(await redis.hget(`game:${id}`, 'options'))
         const board = new Board(options, id)
 
         await board.save()
