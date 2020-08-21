@@ -60,6 +60,7 @@ router.get('/game/:id', async (req, res) => {
     try {
         const board = await Board.getBoardById(req.params.id)
 
+        res.type('image/svg+xml')
         res.send(board.render())
     } catch (err) {
         res.send({
@@ -95,6 +96,7 @@ router.get('/game/:id/:from-:to', async (req, res) => {
         board.movePiece(x1, y1, x2, y2)
         await board.save()
 
+        res.type('image/svg+xml')
         res.send(board.render())
     } catch (err) {
         res.send({
@@ -113,6 +115,7 @@ router.get('/game/:id/reset', async (req, res) => {
     try {
         const board = await Board.resetBoard(req.params.id)
 
+        res.type('image/svg+xml')
         res.send(board.render())
     } catch (err) {
         res.send({
@@ -142,6 +145,7 @@ router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
         board.setPiece(x, y, color, piece)
         await board.save()
 
+        res.type('image/svg+xml')
         res.send(board.render())
     } catch (err) {
         res.send({
@@ -171,6 +175,7 @@ router.get('/game/:id/remove/:tile', async (req, res) => {
         board.removePiece(x, y)
         await board.save()
 
+        res.type('image/svg+xml')
         res.send(board.render())
     } catch (err) {
         res.send({

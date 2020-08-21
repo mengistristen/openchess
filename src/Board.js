@@ -187,7 +187,7 @@ class Board {
             }
         }
 
-        return `<svg xmlns='https://www.w3.org/2000/svg' width='${this.options.boardSize}' height='${this.options.boardSize}'>
+        return `<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink="http://www.w3.org/1999/xlink" width='${this.options.boardSize}' height='${this.options.boardSize}'>
             ${inner}
         </svg>`
     }
