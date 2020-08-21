@@ -195,7 +195,7 @@ class Board {
     movePiece(x1, y1, x2, y2) {
         //can't move an empty piece onto another spot
         if (this.board[y1][x1].piece === pieces.NONE)
-            throw { message: `(${x1},${y1}) contains no piece` }
+            throw new Error(`(${x1},${y1}) contains no piece`)
 
         this.board[y2][x2] = this.board[y1][x1]
         this.board[y1][x1] = empty
@@ -203,13 +203,13 @@ class Board {
 
     setPiece(x, y, color, piece) {
         if (!Object.values(colors).includes(color) || color === colors.NONE)
-            throw {
-                message: `Invalid color attribute: '${color}', expected: ${Object.values(
+            throw new Error(
+                `Invalid color attribute: '${color}', expected: ${Object.values(
                     colors
                 )
                     .filter((item) => item !== colors.NONE)
-                    .join(', ')}`,
-            }
+                    .join(', ')}`
+            )
 
         //check whether or not a piece placement is valid depending on the game
         //and the strict option
@@ -224,11 +224,9 @@ class Board {
         else validPieces = Object.values(pieces[this.options.game])
 
         if (!validPieces.includes(piece) || piece === pieces.NONE)
-            throw {
-                message: `Invalid piece: '${piece}', expected: ${validPieces.join(
-                    ', '
-                )}`,
-            }
+            throw new Error(
+                `Invalid piece: '${piece}', expected: ${validPieces.join(', ')}`
+            )
 
         this.board[y][x] = { color, piece }
     }
@@ -261,7 +259,7 @@ class Board {
 
     static async resetBoard(id) {
         if (!redis.hexists(`game:${id}`, 'board'))
-            throw { message: `Invalid game id: ${id}` }
+            throw new Error(`Invalid game id: ${id}`)
 
         const options = JSON.parse(await redis.hget(`game:${id}`, 'options'))
         const board = new Board(options, id)

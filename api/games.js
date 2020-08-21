@@ -33,7 +33,7 @@ router.get('/new', async (req, res) => {
             options.game !== 'checkers' &&
             options.game !== 'none'
         )
-            throw { message: `Invalid game type: ${options.game}` }
+            throw new Error(`Invalid game type: ${options.game}`)
 
         let board = new Board(options)
 
@@ -79,14 +79,14 @@ router.get('/game/:id/:from-:to', async (req, res) => {
         const { from, to, id } = req.params
 
         if (!Coordinate.test(from))
-            throw {
-                message: `Invalid from coordinate: ${from}, expected to match [A-H][1-8]`,
-            }
+            throw new Error(
+                `Invalid from coordinate: ${from}, expected to match [A-H][1-8]`
+            )
 
         if (!Coordinate.test(to))
-            throw {
-                message: `Invalid to coordinate: ${to}, expected to match [A-H][1-8]`,
-            }
+            throw new Error(
+                `Invalid to coordinate: ${to}, expected to match [A-H][1-8]`
+            )
 
         const board = await Board.getBoardById(id)
         const [x1, y1] = Coordinate.parseCoordinate(from)
@@ -132,9 +132,9 @@ router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
         const { id, tile, color, piece } = req.params
 
         if (!Coordinate.test(tile))
-            throw {
-                message: `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`,
-            }
+            throw new Error(
+                `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`
+            )
 
         const board = await Board.getBoardById(id)
         const [x, y] = Coordinate.parseCoordinate(tile)
@@ -161,9 +161,9 @@ router.get('/game/:id/remove/:tile', async (req, res) => {
         const { id, tile } = req.params
 
         if (!Coordinate.test(tile))
-            throw {
-                message: `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`,
-            }
+            throw new Error(
+                `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`
+            )
 
         const board = await Board.getBoardById(id)
         const [x, y] = Coordinate.parseCoordinate(tile)
