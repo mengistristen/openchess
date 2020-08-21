@@ -4,6 +4,12 @@
 const redis = require('./redisClient')
 const { pieces, colors, mainRow, empty } = require('./pieces')
 
+const generateCheckersRow = (even, color) => {
+    return [...Array(8)].map((_, index) =>
+        index % 2 == even ? empty : { color, piece: pieces.checkers.STANDARD }
+    )
+}
+
 class Board {
     constructor(options, id) {
         this.options = options
@@ -13,6 +19,8 @@ class Board {
 
         if (this.options.game === 'chess')
             this.board = this.generateChessBoard()
+        if (this.options.game === 'checkers')
+            this.board = this.generateCheckersBoard()
         else if (this.options.game === 'none')
             this.board = this.generateEmptyBoard()
     }
@@ -41,6 +49,21 @@ class Board {
         board[7] = mainRow.map((piece) => {
             return { color: colors.WHITE, piece }
         })
+
+        return board
+    }
+
+    generateCheckersBoard() {
+        const board = Array(8)
+
+        board[0] = generateCheckersRow(true, colors.WHITE)
+        board[1] = generateCheckersRow(false, colors.WHITE)
+        board[2] = generateCheckersRow(true, colors.WHITE)
+        board[3] = [...Array(8)].map(() => empty)
+        board[4] = [...Array(8)].map(() => empty)
+        board[5] = generateCheckersRow(false, colors.RED)
+        board[6] = generateCheckersRow(true, colors.RED)
+        board[7] = generateCheckersRow(false, colors.RED)
 
         return board
     }
@@ -208,6 +231,10 @@ class Board {
             }
 
         this.board[y][x] = { color, piece }
+    }
+
+    removePiece(x, y) {
+        this.board[y][x] = empty
     }
 
     async save() {
