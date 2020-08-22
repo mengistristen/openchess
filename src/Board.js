@@ -175,13 +175,13 @@ class Board {
                             animation.animateY === y
                         )
                     )
-                        inner += `<image 
-                                    x='${posX}' 
-                                    y='${posY}' 
-                                    width='${size}' 
-                                    height='${size}' 
-                                    href='https://openchess.s3-us-west-2.amazonaws.com/${pieceData.piece}_${pieceData.color}.svg' 
-                                />`
+                        inner += this.drawPiece(
+                            x,
+                            y,
+                            tileSize,
+                            pieceData.piece,
+                            pieceData.color
+                        )
                 }
 
                 // foreground (coordinates)
@@ -194,21 +194,38 @@ class Board {
         if (animation) {
             let pieceData = this.board[animation.animateY][animation.animateX]
 
-            inner += `<image
-                x='${animation.animateX * tileSize + this.options.pieceMargin}' 
-                y='${animation.animateY * tileSize + this.options.pieceMargin}' 
-                width='${tileSize - this.options.pieceMargin * 2}' 
-                height='${tileSize - this.options.pieceMargin * 2}' 
-                href='https://openchess.s3-us-west-2.amazonaws.com/${
-                    pieceData.piece
-                }_${pieceData.color}.svg'>
-                    ${animation.animation}
-            </image>`
+            inner += this.drawPiece(
+                animation.animateX,
+                animation.animateY,
+                tileSize,
+                pieceData.piece,
+                pieceData.color,
+                animation.animation
+            )
         }
 
         return `<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink="http://www.w3.org/1999/xlink" width='${this.options.boardSize}' height='${this.options.boardSize}'>
             ${inner}
         </svg>`
+    }
+
+    drawPiece(x, y, tileSize, piece, color, inner) {
+        if (inner)
+            return `<image
+                x='${x * tileSize + this.options.pieceMargin}' 
+                y='${y * tileSize + this.options.pieceMargin}' 
+                width='${tileSize - this.options.pieceMargin * 2}' 
+                height='${tileSize - this.options.pieceMargin * 2}' 
+                href='https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg'>
+                    ${inner}
+            </image>`
+        else
+            return `<image
+                x='${x * tileSize + this.options.pieceMargin}' 
+                y='${y * tileSize + this.options.pieceMargin}' 
+                width='${tileSize - this.options.pieceMargin * 2}' 
+                height='${tileSize - this.options.pieceMargin * 2}' 
+                href='https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg'/>`
     }
 
     movePiece(x1, y1, x2, y2) {
