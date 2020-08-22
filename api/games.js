@@ -93,12 +93,14 @@ router.get('/game/:id/:from-:to', async (req, res) => {
         const [x1, y1] = Coordinate.parseCoordinate(from)
         const [x2, y2] = Coordinate.parseCoordinate(to)
 
-        board.movePiece(x1, y1, x2, y2)
+        const animation = board.movePiece(x1, y1, x2, y2)
         await board.save()
 
         res.type('image/svg+xml')
-        res.send(board.render())
+        //console.log(board.render(animation))
+        res.send(board.render(animation))
     } catch (err) {
+        res.type('json')
         res.send({
             message: err.message,
         })
