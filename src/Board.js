@@ -190,8 +190,8 @@ class Board {
             let pieceData = this.board[animation.animateY][animation.animateX]
 
             inner += this.drawPiece(
-                animation.animateX,
-                animation.animateY,
+                animation.startX,
+                animation.startY,
                 tileSize,
                 pieceData.piece,
                 pieceData.color,
@@ -209,22 +209,14 @@ class Board {
     }
 
     drawPiece(x, y, tileSize, piece, color, inner) {
-        if (inner)
-            return `<image
-                x='${x * tileSize + this.options.pieceMargin}' 
-                y='${y * tileSize + this.options.pieceMargin}' 
-                width='${tileSize - this.options.pieceMargin * 2}' 
-                height='${tileSize - this.options.pieceMargin * 2}' 
-                href='https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg'>
-                    ${inner}
-            </image>`
-        else
-            return `<image
-                x='${x * tileSize + this.options.pieceMargin}' 
-                y='${y * tileSize + this.options.pieceMargin}' 
-                width='${tileSize - this.options.pieceMargin * 2}' 
-                height='${tileSize - this.options.pieceMargin * 2}' 
-                href='https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg'/>`
+        return `<image
+            x='${x * tileSize + this.options.pieceMargin}' 
+            y='${y * tileSize + this.options.pieceMargin}' 
+            width='${tileSize - this.options.pieceMargin * 2}' 
+            height='${tileSize - this.options.pieceMargin * 2}' 
+            href='https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg'>
+                ${inner ? inner : ''}
+        </image>`
     }
 
     movePiece(x1, y1, x2, y2) {
@@ -239,13 +231,19 @@ class Board {
         const animation = `
             <animate attributeName="x" values="${
                 x1 * tileSize + this.options.pieceMargin
-            };${x2 * tileSize + this.options.pieceMargin}" dur="1s"/>
+            };${
+            x2 * tileSize + this.options.pieceMargin
+        }" dur="1s" fill="freeze" calcMode="spline" keySplines="0.5 0 0.5 1"/>
             <animate attributeName="y" values="${
                 y1 * tileSize + this.options.pieceMargin
-            };${y2 * tileSize + this.options.pieceMargin}" dur="1s"/>
+            };${
+            y2 * tileSize + this.options.pieceMargin
+        }" dur="1s" fill="freeze" calcMode="spline" keySplines="0.5 0 0.5 1"/>
         `
 
         return {
+            startX: x1,
+            startY: y1,
             animateX: x2,
             animateY: y2,
             animation,
