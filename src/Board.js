@@ -72,7 +72,7 @@ class Board {
         return [...Array(8)].map(() => [...Array(8)].map(() => empty))
     }
 
-    drawCoordinates(inner, x, y) {
+    drawCoordinates(x, y) {
         let tileSize = this.options.boardSize / 8
         let x2
         let y2
@@ -137,58 +137,53 @@ class Board {
 
     render(animation) {
         let tileSize = this.options.boardSize / 8
-        let inner = ''
 
-        for (let y = 0; y < 8; ++y) {
-            for (let x = 0; x < 8; ++x) {
-                let pieceData = this.board[y][x]
-                let color
+        //Render all tile and board pieces
+        let inner = this.board
+            .map((row, y) => {
+                return row.map((cell, x) => {
+                    let markup = ''
+                    let color
 
-                if (
-                    (x % 2 === 0 && y % 2 === 1) ||
-                    (x % 2 === 1 && y % 2 === 0)
-                )
-                    color = this.options.boardDarkColor
-                else color = this.options.boardLightColor
-
-                // background (board)
-                inner += `<rect 
-                            x='${x * tileSize}' 
-                            y='${y * tileSize}' 
-                            width='${tileSize}' 
-                            height='${tileSize}'
-                            style="fill:${color}" />` //;stroke-width:3;stroke:rgb(255,0,0)" />`
-
-                // middleground (pieces)
-                if (pieceData.piece !== pieces.NONE) {
-                    const [posX, posY, size] = [
-                        x * tileSize + this.options.pieceMargin,
-                        y * tileSize + this.options.pieceMargin,
-                        tileSize - this.options.pieceMargin * 2,
-                    ]
-
-                    //If the piece is to be animated, don't render it yet
+                    //Set tile color
                     if (
-                        !(
-                            animation &&
-                            animation.animateX === x &&
-                            animation.animateY === y
-                        )
+                        (x % 2 === 0 && y % 2 === 1) ||
+                        (x % 2 === 1 && y % 2 === 0)
                     )
-                        inner += this.drawPiece(
-                            x,
-                            y,
-                            tileSize,
-                            pieceData.piece,
-                            pieceData.color
-                        )
-                }
+                        color = this.options.boardDarkColor
+                    else color = this.options.boardLightColor
 
-                // foreground (coordinates)
-                if (this.options.coordinates.show)
-                    inner += this.drawCoordinates(inner, x, y)
-            }
-        }
+                    //Draw tile
+                    markup += `<rect 
+                        x='${x * tileSize}' 
+                        y='${y * tileSize}' 
+                        width='${tileSize}' 
+                        height='${tileSize}'
+                        style="fill:${color}" />\n`
+
+                    //If the tile isn't empty or animated, draw the piece
+                    if (cell.piece !== pieces.NONE) {
+                        if (
+                            !(
+                                animation &&
+                                animation.animateX === x &&
+                                animation.animateY === y
+                            )
+                        )
+                            markup += this.drawPiece(
+                                x,
+                                y,
+                                tileSize,
+                                cell.piece,
+                                cell.color
+                            )
+                    }
+
+                    return markup
+                })
+            })
+            .flat()
+            .join('')
 
         //Draw animated piece above others
         if (animation) {
@@ -204,7 +199,11 @@ class Board {
             )
         }
 
-        return `<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink="http://www.w3.org/1999/xlink" width='${this.options.boardSize}' height='${this.options.boardSize}'>
+        return `<svg 
+            xmlns='http://www.w3.org/2000/svg' 
+            xmlns:xlink="http://www.w3.org/1999/xlink" 
+            width='${this.options.boardSize}' 
+            height='${this.options.boardSize}'>
             ${inner}
         </svg>`
     }
