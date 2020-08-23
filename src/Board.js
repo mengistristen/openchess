@@ -78,7 +78,7 @@ class Board {
         let y2
         let anchor
         let baseline
-        let output
+        let output = ''
 
         if (y == 0) {
             x2 = `${x * tileSize + tileSize / 2}`
@@ -139,9 +139,10 @@ class Board {
         let tileSize = this.options.boardSize / 8
 
         //Render all tile and board pieces
-        let inner = this.board
-            .map((row, y) => {
-                return row.map((cell, x) => {
+        let inner = this.board.reduce(
+            (all, value, y) =>
+                all +
+                value.reduce((row, cell, x) => {
                     let markup = ''
                     let color
 
@@ -179,11 +180,10 @@ class Board {
                             )
                     }
 
-                    return markup
-                })
-            })
-            .flat()
-            .join('')
+                    return row + markup
+                }, ''),
+            ''
+        )
 
         //Draw animated piece above others
         if (animation) {
@@ -198,6 +198,10 @@ class Board {
                 animation.animation
             )
         }
+
+        if (this.options.coordinates.show)
+            for (let y = 0; y < 8; ++y)
+                for (let x = 0; x < 8; ++x) inner += this.drawCoordinates(x, y)
 
         return `<svg 
             xmlns='http://www.w3.org/2000/svg' 
