@@ -17,6 +17,7 @@ router.get('/new', async (req, res) => {
             pieceStyle: req.query.pstyle || 'style1',
             pieceMargin: parseInt(req.query.pmargin) || 5,
             strict: req.query.strict || 'false',
+            animation: req.query.animation || 'false',
             coordinates: {
                 show: req.query.cshow == 'true' || false,
                 color: req.query.ccolor || 'rgb(106,132,167)',
@@ -93,12 +94,16 @@ router.get('/game/:id/:from-:to', async (req, res) => {
         const [x1, y1] = Coordinate.parseCoordinate(from)
         const [x2, y2] = Coordinate.parseCoordinate(to)
 
-        board.movePiece(x1, y1, x2, y2)
+        const animation = board.movePiece(x1, y1, x2, y2)
         await board.save()
 
         res.type('image/svg+xml')
-        res.send(board.render())
+
+        if (board.options.animation !== 'false')
+            res.send(board.render(animation))
+        else res.send(board.render())
     } catch (err) {
+        res.type('json')
         res.send({
             message: err.message,
         })

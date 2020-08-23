@@ -72,7 +72,7 @@ class Board {
         return [...Array(8)].map(() => [...Array(8)].map(() => empty))
     }
 
-    drawCoordinates(inner, x, y) {
+    drawCoordinates(x, y) {
         let tileSize = this.options.boardSize / 8
         let x2
         let y2
@@ -135,70 +135,119 @@ class Board {
         return output
     }
 
-    render() {
+    render(animation) {
         let tileSize = this.options.boardSize / 8
-        let inner = ''
 
-        for (let y = 0; y < 8; ++y) {
-            for (let x = 0; x < 8; ++x) {
-                let pieceData = this.board[y][x]
-                let color
+        //Render all tile and board pieces
+        let inner = this.board
+            .map((row, y) => {
+                return row.map((cell, x) => {
+                    let markup = ''
+                    let color
 
-                if (
-                    (x % 2 === 0 && y % 2 === 1) ||
-                    (x % 2 === 1 && y % 2 === 0)
-                )
-                    color = this.options.boardDarkColor
-                else color = this.options.boardLightColor
+                    //Set tile color
+                    if (
+                        (x % 2 === 0 && y % 2 === 1) ||
+                        (x % 2 === 1 && y % 2 === 0)
+                    )
+                        color = this.options.boardDarkColor
+                    else color = this.options.boardLightColor
 
-                // background (board)
-                inner += `<rect 
-                            x='${x * tileSize}' 
-                            y='${y * tileSize}' 
-                            width='${tileSize}' 
-                            height='${tileSize}'
-                            style="fill:${color}" />` //;stroke-width:3;stroke:rgb(255,0,0)" />`
+                    //Draw tile
+                    markup += `<rect 
+                        x='${x * tileSize}' 
+                        y='${y * tileSize}' 
+                        width='${tileSize}' 
+                        height='${tileSize}'
+                        style="fill:${color}" />\n`
 
-                // middleground (pieces)
-                if (pieceData.piece !== pieces.NONE) {
-                    //console.log('drawing piece: ' + pieceData.piece + '\tcolor: ' + pieceData.color + '\tmargin: ' + this.options.pieceMargin)
-                    inner += `<image 
-                                    x='${
-                                        x * tileSize + this.options.pieceMargin
-                                    }' 
-                                    y='${
-                                        y * tileSize + this.options.pieceMargin
-                                    }' 
-                                    width='${
-                                        tileSize - this.options.pieceMargin * 2
-                                    }' 
-                                    height='${
-                                        tileSize - this.options.pieceMargin * 2
-                                    }' 
-                                    href='https://openchess.s3-us-west-2.amazonaws.com/${
-                                        pieceData.piece
-                                    }_${pieceData.color}.svg' 
-                                />`
-                }
+                    //If the tile isn't empty or animated, draw the piece
+                    if (cell.piece !== pieces.NONE) {
+                        if (
+                            !(
+                                animation &&
+                                animation.animateX === x &&
+                                animation.animateY === y
+                            )
+                        )
+                            markup += this.drawPiece(
+                                x,
+                                y,
+                                tileSize,
+                                cell.piece,
+                                cell.color
+                            )
+                    }
 
-                // foreground (coordinates)
-                if (this.options.coordinates.show)
-                    inner += this.drawCoordinates(inner, x, y)
-            }
+                    return markup
+                })
+            })
+            .flat()
+            .join('')
+
+        //Draw animated piece above others
+        if (animation) {
+            let pieceData = this.board[animation.animateY][animation.animateX]
+
+            inner += this.drawPiece(
+                animation.startX,
+                animation.startY,
+                tileSize,
+                pieceData.piece,
+                pieceData.color,
+                animation.animation
+            )
         }
 
-        return `<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink="http://www.w3.org/1999/xlink" width='${this.options.boardSize}' height='${this.options.boardSize}'>
+        return `<svg 
+            xmlns='http://www.w3.org/2000/svg' 
+            xmlns:xlink="http://www.w3.org/1999/xlink" 
+            width='${this.options.boardSize}' 
+            height='${this.options.boardSize}'>
             ${inner}
         </svg>`
     }
 
+    drawPiece(x, y, tileSize, piece, color, inner) {
+        return `<image
+            x='${x * tileSize + this.options.pieceMargin}' 
+            y='${y * tileSize + this.options.pieceMargin}' 
+            width='${tileSize - this.options.pieceMargin * 2}' 
+            height='${tileSize - this.options.pieceMargin * 2}' 
+            href='https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg'>
+                ${inner ? inner : ''}
+        </image>`
+    }
+
     movePiece(x1, y1, x2, y2) {
+        let tileSize = this.options.boardSize / 8
         //can't move an empty piece onto another spot
         if (this.board[y1][x1].piece === pieces.NONE)
             throw new Error(`(${x1},${y1}) contains no piece`)
 
         this.board[y2][x2] = this.board[y1][x1]
         this.board[y1][x1] = empty
+
+        const animation = `
+            <animate attributeName="x" values="${
+                x1 * tileSize + this.options.pieceMargin
+            };${
+            x2 * tileSize + this.options.pieceMargin
+        }" dur="1s" fill="freeze" calcMode="spline" keySplines="0.5 0 0.5 1"/>
+            <animate attributeName="y" values="${
+                y1 * tileSize + this.options.pieceMargin
+            };${
+            y2 * tileSize + this.options.pieceMargin
+        }" dur="1s" fill="freeze" calcMode="spline" keySplines="0.5 0 0.5 1"/>
+        `
+
+        return {
+            startX: x1,
+            startY: y1,
+            animateX: x2,
+            animateY: y2,
+            animation,
+        }
     }
 
     setPiece(x, y, color, piece) {
