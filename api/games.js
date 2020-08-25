@@ -64,6 +64,7 @@ router.get('/game/:id', async (req, res) => {
         res.type('image/svg+xml')
         res.send(board.render())
     } catch (err) {
+        res.type('json')
         res.send({
             message: err.message,
         })
@@ -123,6 +124,7 @@ router.get('/game/:id/reset', async (req, res) => {
         res.type('image/svg+xml')
         res.send(board.render())
     } catch (err) {
+        res.type('json')
         res.send({
             message: err.message,
         })
@@ -153,6 +155,7 @@ router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
         res.type('image/svg+xml')
         res.send(board.render())
     } catch (err) {
+        res.type('json')
         res.send({
             message: err.message,
         })
@@ -183,6 +186,7 @@ router.get('/game/:id/remove/:tile', async (req, res) => {
         res.type('image/svg+xml')
         res.send(board.render())
     } catch (err) {
+        res.type('json')
         res.send({
             message: err.message,
         })
