@@ -311,7 +311,7 @@ class Board {
     }
 
     static async resetBoard(id) {
-        if (!redis.hexists(`game:${id}`, 'board'))
+        if (!redis.exists(`game:${id}`))
             throw new Error(`Invalid game id: ${id}`)
 
         const options = JSON.parse(await redis.hget(`game:${id}`, 'options'))
