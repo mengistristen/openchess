@@ -5,10 +5,10 @@ let svg = ''
 
 getGameButton.addEventListener('click', async () => {
     try {
-        let response = await fetch('/api/new')
+        let response = await fetch('/api/new?animation=true')
         const { id } = await response.json()
 
-        response = await fetch(`/api/game/${id}`)
+        response = await fetch(`/api/game/${id}/A2-A3`)
         const svg = await response.text()
 
         showcase.innerHTML = svg

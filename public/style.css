@@ -1,10 +1,55 @@
 body {
     margin: 0;
     padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
 #boardShowcase {
-    position: absolute;
+    position: fixed;
     bottom: 10px;
     right: 10px;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.collapsible {
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    padding: 10px;
+    color: white;
+    background-color: #666;
+}
+
+.collapsible:hover {
+    background-color: #555;
+}
+
+.description {
+    padding: 10px;
+}
+
+.content {
+    display: none;
+    width: 100%;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+pre {
+    font-family: 'Courier New', Courier, monospace;
+    padding: 10px;
+    background-color: #010101b5;
+    border-radius: 10px;
+    color: white;
+    overflow-x: auto;
+}
+
+code {
+    font-size: x-large;
 }
