@@ -1,6 +1,8 @@
 /*
     Purpose: This is the definition file for the board class.
 */
+const axios = require('axios')
+const btoa = require('btoa')
 const redis = require('./redisClient')
 const { pieces, colors, mainRow, empty } = require('./pieces')
 
@@ -135,61 +137,17 @@ class Board {
         return output
     }
 
-    render(animation) {
+    async render(animation) {
         let tileSize = this.options.boardSize / 8
 
         //Render all tile and board pieces
-        let inner = this.board.reduce(
-            (all, value, y) =>
-                all +
-                value.reduce((row, cell, x) => {
-                    let markup = ''
-                    let color
-
-                    //Set tile color
-                    if (
-                        (x % 2 === 0 && y % 2 === 1) ||
-                        (x % 2 === 1 && y % 2 === 0)
-                    )
-                        color = this.options.boardDarkColor
-                    else color = this.options.boardLightColor
-
-                    //Draw tile
-                    markup += `<rect 
-                        x='${x * tileSize}' 
-                        y='${y * tileSize}' 
-                        width='${tileSize}' 
-                        height='${tileSize}'
-                        style="fill:${color}" />\n`
-
-                    //If the tile isn't empty or animated, draw the piece
-                    if (cell.piece !== pieces.NONE) {
-                        if (
-                            !(
-                                animation &&
-                                animation.animateX === x &&
-                                animation.animateY === y
-                            )
-                        )
-                            markup += this.drawPiece(
-                                x,
-                                y,
-                                tileSize,
-                                cell.piece,
-                                cell.color
-                            )
-                    }
-
-                    return row + markup
-                }, ''),
-            ''
-        )
+        let inner = await this._boardAsSvgString(animation, tileSize)
 
         //Draw animated piece above others
         if (animation) {
             let pieceData = this.board[animation.animateY][animation.animateX]
 
-            inner += this.drawPiece(
+            inner += await this.drawPiece(
                 animation.startX,
                 animation.startY,
                 tileSize,
@@ -212,13 +170,28 @@ class Board {
         </svg>`
     }
 
-    drawPiece(x, y, tileSize, piece, color, inner) {
+    async drawPiece(x, y, tileSize, piece, color, inner) {
+        let svgData
+
+        //If the data url already exists...
+        if (await redis.exists(`${piece}:${color}`)) {
+            svgData = await redis.get(`${piece}:${color}`)
+        } else {
+            //Otherwise, get the image and generate the data url
+            const { data } = await axios.get(
+                `https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg`
+            )
+            svgData = btoa(data)
+
+            await redis.set(`${piece}:${color}`, svgData)
+        }
+
         return `<image
             x='${x * tileSize + this.options.pieceMargin}' 
             y='${y * tileSize + this.options.pieceMargin}' 
             width='${tileSize - this.options.pieceMargin * 2}' 
             height='${tileSize - this.options.pieceMargin * 2}' 
-            href='https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg'>
+            href='data:image/svg+xml;base64,${svgData}'>
                 ${inner ? inner : ''}
         </image>`
     }
@@ -320,6 +293,70 @@ class Board {
         await board.save()
 
         return board
+    }
+
+    async _boardAsSvgString(animation, tileSize) {
+        //Take each string representing a row and join them together
+        return (
+            await Promise.all(
+                this.board.map(async (row, y) => {
+                    return await this._rowAsSvgString(
+                        row,
+                        y,
+                        animation,
+                        tileSize
+                    )
+                })
+            )
+        ).join('')
+    }
+
+    async _rowAsSvgString(row, y, animation, tileSize) {
+        //Take each tile and join them
+        return (
+            await Promise.all(
+                row.map(async (cell, x) => {
+                    let markup = ''
+                    let color
+
+                    //Set tile color
+                    if (
+                        (x % 2 === 0 && y % 2 === 1) ||
+                        (x % 2 === 1 && y % 2 === 0)
+                    )
+                        color = this.options.boardDarkColor
+                    else color = this.options.boardLightColor
+
+                    //Draw tile
+                    markup += `<rect 
+                    x='${x * tileSize}' 
+                    y='${y * tileSize}' 
+                    width='${tileSize}' 
+                    height='${tileSize}'
+                    style="fill:${color}" />\n`
+
+                    //If the tile isn't empty or animated, draw the piece
+                    if (cell.piece !== pieces.NONE) {
+                        if (
+                            !(
+                                animation &&
+                                animation.animateX === x &&
+                                animation.animateY === y
+                            )
+                        )
+                            markup += await this.drawPiece(
+                                x,
+                                y,
+                                tileSize,
+                                cell.piece,
+                                cell.color
+                            )
+                    }
+
+                    return markup
+                })
+            )
+        ).join('')
     }
 }
 
