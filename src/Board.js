@@ -234,6 +234,8 @@ class Board {
     }
 
     setPiece(x, y, color, piece) {
+        //Decide which piece colors are valid given the game
+        //and the piece
         let validColors
 
         if (this.options.game === 'chess' && this.options.strict !== 'false')
