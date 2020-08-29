@@ -16,9 +16,15 @@ const pieces = {
 
 const colors = {
     NONE: 'none',
-    WHITE: 'white',
-    BLACK: 'black',
-    RED: 'red',
+    chess: {
+        BLACK: 'black',
+        WHITE: 'white',
+    },
+    checkers: {
+        BLACK: 'black',
+        WHITE: 'white',
+        RED: 'red',
+    },
 }
 
 const mainRow = [

@@ -32,10 +32,10 @@ class Board {
 
         //Setup black side
         board[0] = mainRow.map((piece) => {
-            return { color: colors.BLACK, piece }
+            return { color: colors.chess.BLACK, piece }
         })
         board[1] = [...Array(8)].map(() => {
-            return { color: colors.BLACK, piece: pieces.chess.PAWN }
+            return { color: colors.chess.BLACK, piece: pieces.chess.PAWN }
         })
 
         //Setup empty spaces
@@ -46,10 +46,10 @@ class Board {
 
         //Setup white side
         board[6] = [...Array(8)].map(() => {
-            return { color: colors.WHITE, piece: pieces.chess.PAWN }
+            return { color: colors.chess.WHITE, piece: pieces.chess.PAWN }
         })
         board[7] = mainRow.map((piece) => {
-            return { color: colors.WHITE, piece }
+            return { color: colors.chess.WHITE, piece }
         })
 
         return board
@@ -58,14 +58,14 @@ class Board {
     generateCheckersBoard() {
         const board = Array(8)
 
-        board[0] = generateCheckersRow(true, colors.WHITE)
-        board[1] = generateCheckersRow(false, colors.WHITE)
-        board[2] = generateCheckersRow(true, colors.WHITE)
+        board[0] = generateCheckersRow(true, colors.checkers.WHITE)
+        board[1] = generateCheckersRow(false, colors.checkers.WHITE)
+        board[2] = generateCheckersRow(true, colors.checkers.WHITE)
         board[3] = [...Array(8)].map(() => empty)
         board[4] = [...Array(8)].map(() => empty)
-        board[5] = generateCheckersRow(false, colors.RED)
-        board[6] = generateCheckersRow(true, colors.RED)
-        board[7] = generateCheckersRow(false, colors.RED)
+        board[5] = generateCheckersRow(false, colors.checkers.RED)
+        board[6] = generateCheckersRow(true, colors.checkers.RED)
+        board[7] = generateCheckersRow(false, colors.checkers.RED)
 
         return board
     }
@@ -177,13 +177,19 @@ class Board {
         if (await redis.exists(`${piece}:${color}`)) {
             svgData = await redis.get(`${piece}:${color}`)
         } else {
-            //Otherwise, get the image and generate the data url
-            const { data } = await axios.get(
-                `https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg`
-            )
-            svgData = btoa(data)
+            try {
+                //Otherwise, get the image and generate the data url
+                const { data } = await axios.get(
+                    `https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg`
+                )
+                svgData = btoa(data)
 
-            await redis.set(`${piece}:${color}`, svgData)
+                await redis.set(`${piece}:${color}`, svgData)
+            } catch (err) {
+                throw new Error(
+                    `Invalid color-piece combination: ${color}-${piece}`
+                )
+            }
         }
 
         return `<image
@@ -228,13 +234,30 @@ class Board {
     }
 
     setPiece(x, y, color, piece) {
-        if (!Object.values(colors).includes(color) || color === colors.NONE)
+        let validColors
+
+        if (this.options.game === 'chess' && this.options.strict !== 'false')
+            validColors = Object.values(colors.chess)
+        else if (
+            this.options.game === 'checkers' &&
+            this.options.strict !== 'false'
+        )
+            validColors = Object.values(colors.checkers)
+        else if (
+            this.options.game === 'none' ||
+            this.options.strict === 'false'
+        ) {
+            if (Object.values(pieces.chess).includes(piece))
+                validColors = Object.values(colors.chess)
+            else if (Object.values(pieces.checkers).includes(piece))
+                validColors = Object.values(colors.checkers)
+        }
+
+        if (!validColors.includes(color) || color === colors.NONE)
             throw new Error(
-                `Invalid color attribute: '${color}', expected: ${Object.values(
-                    colors
-                )
-                    .filter((item) => item !== colors.NONE)
-                    .join(', ')}`
+                `Invalid color attribute: '${color}', expected: ${validColors.join(
+                    ', '
+                )}`
             )
 
         //check whether or not a piece placement is valid depending on the game
