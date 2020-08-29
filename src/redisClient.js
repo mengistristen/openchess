@@ -1,6 +1,14 @@
 const redis = require('redis')
+const url = require('url')
 const { promisify } = require('util')
-const client = redis.createClient()
+let client
+
+if (process.env.REDISTOGO_URL) {
+    const rtg = url.parse(process.env.REDISTOGO_URL)
+
+    client = redis.createClient(rtg.port, rtg.hostname)
+    client.auth(rtg.auth.split(':')[1])
+} else client = redis.createClient()
 
 client.on('error', (err) => console.log(err))
 
