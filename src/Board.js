@@ -1,6 +1,8 @@
 /*
     Purpose: This is the definition file for the board class.
 */
+const axios = require('axios')
+const btoa = require('btoa')
 const redis = require('./redisClient')
 const { pieces, colors, mainRow, empty } = require('./pieces')
 
@@ -30,10 +32,10 @@ class Board {
 
         //Setup black side
         board[0] = mainRow.map((piece) => {
-            return { color: colors.BLACK, piece }
+            return { color: colors.chess.BLACK, piece }
         })
         board[1] = [...Array(8)].map(() => {
-            return { color: colors.BLACK, piece: pieces.chess.PAWN }
+            return { color: colors.chess.BLACK, piece: pieces.chess.PAWN }
         })
 
         //Setup empty spaces
@@ -44,10 +46,10 @@ class Board {
 
         //Setup white side
         board[6] = [...Array(8)].map(() => {
-            return { color: colors.WHITE, piece: pieces.chess.PAWN }
+            return { color: colors.chess.WHITE, piece: pieces.chess.PAWN }
         })
         board[7] = mainRow.map((piece) => {
-            return { color: colors.WHITE, piece }
+            return { color: colors.chess.WHITE, piece }
         })
 
         return board
@@ -56,14 +58,14 @@ class Board {
     generateCheckersBoard() {
         const board = Array(8)
 
-        board[0] = generateCheckersRow(true, colors.WHITE)
-        board[1] = generateCheckersRow(false, colors.WHITE)
-        board[2] = generateCheckersRow(true, colors.WHITE)
+        board[0] = generateCheckersRow(true, colors.checkers.WHITE)
+        board[1] = generateCheckersRow(false, colors.checkers.WHITE)
+        board[2] = generateCheckersRow(true, colors.checkers.WHITE)
         board[3] = [...Array(8)].map(() => empty)
         board[4] = [...Array(8)].map(() => empty)
-        board[5] = generateCheckersRow(false, colors.RED)
-        board[6] = generateCheckersRow(true, colors.RED)
-        board[7] = generateCheckersRow(false, colors.RED)
+        board[5] = generateCheckersRow(false, colors.checkers.RED)
+        board[6] = generateCheckersRow(true, colors.checkers.RED)
+        board[7] = generateCheckersRow(false, colors.checkers.RED)
 
         return board
     }
@@ -135,61 +137,17 @@ class Board {
         return output
     }
 
-    render(animation) {
+    async render(animation) {
         let tileSize = this.options.boardSize / 8
 
         //Render all tile and board pieces
-        let inner = this.board.reduce(
-            (all, value, y) =>
-                all +
-                value.reduce((row, cell, x) => {
-                    let markup = ''
-                    let color
-
-                    //Set tile color
-                    if (
-                        (x % 2 === 0 && y % 2 === 1) ||
-                        (x % 2 === 1 && y % 2 === 0)
-                    )
-                        color = this.options.boardDarkColor
-                    else color = this.options.boardLightColor
-
-                    //Draw tile
-                    markup += `<rect 
-                        x='${x * tileSize}' 
-                        y='${y * tileSize}' 
-                        width='${tileSize}' 
-                        height='${tileSize}'
-                        style="fill:${color}" />\n`
-
-                    //If the tile isn't empty or animated, draw the piece
-                    if (cell.piece !== pieces.NONE) {
-                        if (
-                            !(
-                                animation &&
-                                animation.animateX === x &&
-                                animation.animateY === y
-                            )
-                        )
-                            markup += this.drawPiece(
-                                x,
-                                y,
-                                tileSize,
-                                cell.piece,
-                                cell.color
-                            )
-                    }
-
-                    return row + markup
-                }, ''),
-            ''
-        )
+        let inner = await this._boardAsSvgString(animation, tileSize)
 
         //Draw animated piece above others
         if (animation) {
             let pieceData = this.board[animation.animateY][animation.animateX]
 
-            inner += this.drawPiece(
+            inner += await this.drawPiece(
                 animation.startX,
                 animation.startY,
                 tileSize,
@@ -212,13 +170,34 @@ class Board {
         </svg>`
     }
 
-    drawPiece(x, y, tileSize, piece, color, inner) {
+    async drawPiece(x, y, tileSize, piece, color, inner) {
+        let svgData
+
+        //If the data url already exists...
+        if (await redis.exists(`${piece}:${color}`)) {
+            svgData = await redis.get(`${piece}:${color}`)
+        } else {
+            try {
+                //Otherwise, get the image and generate the data url
+                const { data } = await axios.get(
+                    `https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg`
+                )
+                svgData = btoa(data)
+
+                await redis.set(`${piece}:${color}`, svgData)
+            } catch (err) {
+                throw new Error(
+                    `Invalid color-piece combination: ${color}-${piece}`
+                )
+            }
+        }
+
         return `<image
             x='${x * tileSize + this.options.pieceMargin}' 
             y='${y * tileSize + this.options.pieceMargin}' 
             width='${tileSize - this.options.pieceMargin * 2}' 
             height='${tileSize - this.options.pieceMargin * 2}' 
-            href='https://openchess.s3-us-west-2.amazonaws.com/${piece}_${color}.svg'>
+            href='data:image/svg+xml;base64,${svgData}'>
                 ${inner ? inner : ''}
         </image>`
     }
@@ -255,13 +234,32 @@ class Board {
     }
 
     setPiece(x, y, color, piece) {
-        if (!Object.values(colors).includes(color) || color === colors.NONE)
+        //Decide which piece colors are valid given the game
+        //and the piece
+        let validColors
+
+        if (this.options.game === 'chess' && this.options.strict !== 'false')
+            validColors = Object.values(colors.chess)
+        else if (
+            this.options.game === 'checkers' &&
+            this.options.strict !== 'false'
+        )
+            validColors = Object.values(colors.checkers)
+        else if (
+            this.options.game === 'none' ||
+            this.options.strict === 'false'
+        ) {
+            if (Object.values(pieces.chess).includes(piece))
+                validColors = Object.values(colors.chess)
+            else if (Object.values(pieces.checkers).includes(piece))
+                validColors = Object.values(colors.checkers)
+        }
+
+        if (!validColors.includes(color) || color === colors.NONE)
             throw new Error(
-                `Invalid color attribute: '${color}', expected: ${Object.values(
-                    colors
-                )
-                    .filter((item) => item !== colors.NONE)
-                    .join(', ')}`
+                `Invalid color attribute: '${color}', expected: ${validColors.join(
+                    ', '
+                )}`
             )
 
         //check whether or not a piece placement is valid depending on the game
@@ -320,6 +318,70 @@ class Board {
         await board.save()
 
         return board
+    }
+
+    async _boardAsSvgString(animation, tileSize) {
+        //Take each string representing a row and join them together
+        return (
+            await Promise.all(
+                this.board.map(async (row, y) => {
+                    return await this._rowAsSvgString(
+                        row,
+                        y,
+                        animation,
+                        tileSize
+                    )
+                })
+            )
+        ).join('')
+    }
+
+    async _rowAsSvgString(row, y, animation, tileSize) {
+        //Take each tile and join them
+        return (
+            await Promise.all(
+                row.map(async (cell, x) => {
+                    let markup = ''
+                    let color
+
+                    //Set tile color
+                    if (
+                        (x % 2 === 0 && y % 2 === 1) ||
+                        (x % 2 === 1 && y % 2 === 0)
+                    )
+                        color = this.options.boardDarkColor
+                    else color = this.options.boardLightColor
+
+                    //Draw tile
+                    markup += `<rect 
+                    x='${x * tileSize}' 
+                    y='${y * tileSize}' 
+                    width='${tileSize}' 
+                    height='${tileSize}'
+                    style="fill:${color}" />\n`
+
+                    //If the tile isn't empty or animated, draw the piece
+                    if (cell.piece !== pieces.NONE) {
+                        if (
+                            !(
+                                animation &&
+                                animation.animateX === x &&
+                                animation.animateY === y
+                            )
+                        )
+                            markup += await this.drawPiece(
+                                x,
+                                y,
+                                tileSize,
+                                cell.piece,
+                                cell.color
+                            )
+                    }
+
+                    return markup
+                })
+            )
+        ).join('')
     }
 }
 

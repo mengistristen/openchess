@@ -4,13 +4,15 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon index",
+        "start": "node index",
         "test": "mocha --exit"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "axios": "^0.20.0",
+        "btoa": "^1.2.1",
         "express": "^4.17.1",
         "ip": "^1.1.5",
         "redis": "^3.0.2",

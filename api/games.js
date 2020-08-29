@@ -61,7 +61,9 @@ router.get('/game/:id', async (req, res) => {
     try {
         const board = await Board.getBoardById(req.params.id)
 
-        res.type('image/svg+xml').status(200).send(board.render())
+        res.type('image/svg+xml')
+            .status(200)
+            .send(await board.render())
     } catch (err) {
         res.type('json').status(404).send({
             message: err.message,
@@ -99,8 +101,8 @@ router.get('/game/:id/:from-:to', async (req, res) => {
         res.type('image/svg+xml').status(200)
 
         if (board.options.animation !== 'false')
-            res.send(board.render(animation))
-        else res.send(board.render())
+            res.send(await board.render(animation))
+        else res.send(await board.render())
     } catch (err) {
         res.type('json').status(400).send({
             message: err.message,
@@ -118,7 +120,9 @@ router.get('/game/:id/reset', async (req, res) => {
     try {
         const board = await Board.resetBoard(req.params.id)
 
-        res.type('image/svg+xml').status(200).send(board.render())
+        res.type('image/svg+xml')
+            .status(200)
+            .send(await board.render())
     } catch (err) {
         res.type('json').status(404).send({
             message: err.message,
@@ -147,7 +151,9 @@ router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
         board.setPiece(x, y, color, piece)
         await board.save()
 
-        res.type('image/svg+xml').status(200).send(board.render())
+        res.type('image/svg+xml')
+            .status(200)
+            .send(await board.render())
     } catch (err) {
         res.type('json').status(404).send({
             message: err.message,
@@ -176,7 +182,9 @@ router.get('/game/:id/remove/:tile', async (req, res) => {
         board.removePiece(x, y)
         await board.save()
 
-        res.type('image/svg+xml').status(200).send(board.render())
+        res.type('image/svg+xml')
+            .status(200)
+            .send(await board.render())
     } catch (err) {
         res.type('json').status(404).send({
             message: err.message,

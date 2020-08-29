@@ -8,10 +8,10 @@ getGameButton.addEventListener('click', async () => {
         let response = await fetch('/api/new?animation=true')
         const { id } = await response.json()
 
-        response = await fetch(`/api/game/${id}/A2-A3`)
-        const svg = await response.text()
+        let board = new Image()
+        board.src = `/api/game/${id}`
 
-        showcase.innerHTML = svg
+        showcase.appendChild(board)
     } catch (err) {
         console.error(err.message)
     }
