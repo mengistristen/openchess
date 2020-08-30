@@ -3,6 +3,7 @@
 */
 const axios = require('axios')
 const btoa = require('btoa')
+const { v1: uuidv1 } = require('uuid')
 const redis = require('./redisClient')
 const { pieces, colors, mainRow, empty } = require('./pieces')
 
@@ -16,7 +17,7 @@ class Board {
     constructor(options, id) {
         this.options = options
 
-        if (!id) this.id = Date.now().toString().slice(4, -1)
+        if (!id) this.id = uuidv1()
         else this.id = id
 
         if (this.options.game === 'chess')

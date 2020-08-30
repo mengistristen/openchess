@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const { validate } = require('uuid')
 const Board = require('../src/Board')
 const Coordinate = require('../src/Coordinate')
 
@@ -59,6 +60,9 @@ router.get('/new', async (req, res) => {
 */
 router.get('/game/:id', async (req, res) => {
     try {
+        if (!validate(req.params.id))
+            throw new Error(`Invalid game id: ${req.params.id}`)
+
         const board = await Board.getBoardById(req.params.id)
 
         res.type('image/svg+xml')
@@ -80,6 +84,8 @@ router.get('/game/:id', async (req, res) => {
 router.get('/game/:id/:from-:to', async (req, res) => {
     try {
         const { from, to, id } = req.params
+
+        if (!validate(id)) throw new Error(`Invalid game id: ${id}`)
 
         if (!Coordinate.test(from))
             throw new Error(
@@ -118,6 +124,9 @@ router.get('/game/:id/:from-:to', async (req, res) => {
 */
 router.get('/game/:id/reset', async (req, res) => {
     try {
+        if (!validate(req.params.id))
+            throw new Error(`Invalid game id: ${req.params.id}`)
+
         const board = await Board.resetBoard(req.params.id)
 
         res.type('image/svg+xml')
@@ -139,6 +148,8 @@ router.get('/game/:id/reset', async (req, res) => {
 router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
     try {
         const { id, tile, color, piece } = req.params
+
+        if (!validate(id)) throw new Error(`Invalid game id: ${id}`)
 
         if (!Coordinate.test(tile))
             throw new Error(
@@ -170,6 +181,8 @@ router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
 router.get('/game/:id/remove/:tile', async (req, res) => {
     try {
         const { id, tile } = req.params
+
+        if (!validate(id)) throw new Error(`Invalid game id: ${id}`)
 
         if (!Coordinate.test(tile))
             throw new Error(
