@@ -209,6 +209,15 @@ class Board {
         if (this.board[y1][x1].piece === pieces.NONE)
             throw new Error(`(${x1},${y1}) contains no piece`)
 
+        //if game is strict, can't move piece onto same color
+        if (
+            this.board[y1][x1].color === this.board[y2][x2].color &&
+            this.options.strict !== 'false'
+        )
+            throw new Error(
+                `Can't move piece onto piece of the same color in strict game`
+            )
+
         this.board[y2][x2] = this.board[y1][x1]
         this.board[y1][x1] = empty
 
