@@ -97,6 +97,9 @@ router.get('/game/:id/:from-:to', async (req, res) => {
                 `Invalid to coordinate: ${to}, expected to match [A-H][1-8]`
             )
 
+        if (from === to)
+            throw new Error(`Piece at ${from} cannot move onto itself`)
+
         const board = await Board.getBoardById(id)
         const [x1, y1] = Coordinate.parseCoordinate(from)
         const [x2, y2] = Coordinate.parseCoordinate(to)
