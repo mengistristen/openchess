@@ -136,7 +136,28 @@ router.get('/game/:id/reset', async (req, res) => {
             .status(200)
             .send(await board.render())
     } catch (err) {
-        res.type('json').status(404).send({
+        res.status(404).json({
+            message: err.message,
+        })
+    }
+})
+
+/* 
+    Method: GET
+    Route: /game/:id/options
+    Purpose: This route is used to view the options of 
+        a game
+*/
+router.get('/game/:id/options', async (req, res) => {
+    try {
+        if (!validate(req.params.id))
+            throw new Error(`Invalid game id: ${req.params.id}`)
+
+        const board = await Board.getBoardById(req.params.id)
+
+        res.status(200).json({ options: board.options })
+    } catch (err) {
+        res.status(404).json({
             message: err.message,
         })
     }
