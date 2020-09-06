@@ -20,8 +20,9 @@ class Board {
         if (!id) this.id = uuidv1()
         else this.id = id
 
-        if (this.options.game === 'chess')
-            this.board = this.generateChessBoard()
+        if (this.options.fen !== '')
+            if (this.options.game === 'chess')
+                this.board = this.generateChessBoard()
         if (this.options.game === 'checkers')
             this.board = this.generateCheckersBoard()
         else if (this.options.game === 'none')
@@ -246,7 +247,7 @@ class Board {
     setPiece(x, y, color, piece) {
         //Decide which piece colors are valid given the game
         //and the piece
-        let validColors
+        let validColors = []
 
         if (this.options.game === 'chess' && this.options.strict !== 'false')
             validColors = Object.values(colors.chess)
@@ -265,6 +266,9 @@ class Board {
                 validColors = Object.values(colors.checkers)
         }
 
+        if (validColors.length === 0)
+            throw new Error(`Invalid piece-game combination`)
+
         if (!validColors.includes(color) || color === colors.NONE)
             throw new Error(
                 `Invalid color attribute: '${color}', expected: ${validColors.join(
@@ -274,7 +278,7 @@ class Board {
 
         //check whether or not a piece placement is valid depending on the game
         //and the strict option
-        let validPieces
+        let validPieces = []
 
         //if the game isn't strict or if their is no game, all pieces are valid
         if (this.options.strict === 'false' || this.options.game === 'none')

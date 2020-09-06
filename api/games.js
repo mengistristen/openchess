@@ -19,6 +19,7 @@ router.get('/new', async (req, res) => {
             pieceMargin: parseInt(req.query.pmargin) || 5,
             strict: req.query.strict || 'false',
             animation: req.query.animation || 'false',
+            fen: req.query.fen || '',
             coordinates: {
                 show: req.query.cshow == 'true' || false,
                 color: req.query.ccolor || 'rgb(106,132,167)',
