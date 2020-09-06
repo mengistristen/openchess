@@ -81,7 +81,7 @@ router.get('/game/:id', async (req, res) => {
     Purpose: This route is used to move a piece
         on a board specified by an id.
 */
-router.get('/game/:id/:from-:to', async (req, res) => {
+router.get('/game/:id/move/:from-:to', async (req, res) => {
     try {
         const { from, to, id } = req.params
 
