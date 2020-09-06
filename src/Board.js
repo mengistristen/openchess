@@ -5,7 +5,7 @@ const axios = require('axios')
 const btoa = require('btoa')
 const { v1: uuidv1 } = require('uuid')
 const redis = require('./redisClient')
-const { pieces, colors, mainRow, empty } = require('./pieces')
+const { pieces, colors, mainRow, empty, fen } = require('./pieces')
 
 const generateCheckersRow = (even, color) => {
     return [...Array(8)].map((_, index) =>
@@ -20,12 +20,24 @@ class Board {
         if (!id) this.id = uuidv1()
         else this.id = id
 
-        if (this.options.game === 'chess')
-            this.board = this.generateChessBoard()
-        if (this.options.game === 'checkers')
-            this.board = this.generateCheckersBoard()
-        else if (this.options.game === 'none')
-            this.board = this.generateEmptyBoard()
+        if (!id) {
+            if (this.options.fen !== '') {
+                if (
+                    this.options.game === 'chess' ||
+                    this.options.game === 'none'
+                )
+                    this.board = this.generateFromFen()
+                else if (this.options.game === 'checkers')
+                    this.board = this.generateCheckersBoard()
+            } else {
+                if (this.options.game === 'chess')
+                    this.board = this.generateChessBoard()
+                else if (this.options.game === 'checkers')
+                    this.board = this.generateCheckersBoard()
+                else if (this.options.game === 'none')
+                    this.board = this.generateEmptyBoard()
+            }
+        }
     }
 
     generateChessBoard() {
@@ -73,6 +85,18 @@ class Board {
 
     generateEmptyBoard() {
         return [...Array(8)].map(() => [...Array(8)].map(() => empty))
+    }
+
+    generateFromFen() {
+        const rows = this.options.fen.split('-')
+
+        if (rows.length !== 8) throw new Error('Invalid fen code')
+
+        const board = Array(8)
+
+        rows.forEach((row, index) => (board[index] = this._getFenRow(row)))
+
+        return board
     }
 
     drawCoordinates(x, y) {
@@ -246,7 +270,7 @@ class Board {
     setPiece(x, y, color, piece) {
         //Decide which piece colors are valid given the game
         //and the piece
-        let validColors
+        let validColors = []
 
         if (this.options.game === 'chess' && this.options.strict !== 'false')
             validColors = Object.values(colors.chess)
@@ -265,6 +289,9 @@ class Board {
                 validColors = Object.values(colors.checkers)
         }
 
+        if (validColors.length === 0)
+            throw new Error(`Invalid piece-game combination`)
+
         if (!validColors.includes(color) || color === colors.NONE)
             throw new Error(
                 `Invalid color attribute: '${color}', expected: ${validColors.join(
@@ -274,7 +301,7 @@ class Board {
 
         //check whether or not a piece placement is valid depending on the game
         //and the strict option
-        let validPieces
+        let validPieces = []
 
         //if the game isn't strict or if their is no game, all pieces are valid
         if (this.options.strict === 'false' || this.options.game === 'none')
@@ -392,6 +419,32 @@ class Board {
                 })
             )
         ).join('')
+    }
+
+    _getFenRow(rowFen) {
+        let row = []
+        const rowArray = Array.from(rowFen)
+
+        rowArray.forEach((id) => {
+            if (/[1-8]/.test(id)) {
+                const num = Number.parseInt(id, 10)
+                const newPieces = [...Array(num)].map((_) => empty)
+
+                //Add new empty pieces to row
+                row = [...row, ...newPieces]
+            } else {
+                const piece = fen[id]
+
+                //If it's an invalid piece...
+                if (!piece) throw new Error('Invalid fen piece id')
+
+                row = [...row, piece]
+            }
+        })
+
+        if (row.length !== 8) throw new Error('Invalid row size')
+
+        return row
     }
 }
 
