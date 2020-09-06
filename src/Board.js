@@ -5,7 +5,7 @@ const axios = require('axios')
 const btoa = require('btoa')
 const { v1: uuidv1 } = require('uuid')
 const redis = require('./redisClient')
-const { pieces, colors, mainRow, empty } = require('./pieces')
+const { pieces, colors, mainRow, empty, fen } = require('./pieces')
 
 const generateCheckersRow = (even, color) => {
     return [...Array(8)].map((_, index) =>
@@ -20,13 +20,24 @@ class Board {
         if (!id) this.id = uuidv1()
         else this.id = id
 
-        if (this.options.fen !== '')
-            if (this.options.game === 'chess')
-                this.board = this.generateChessBoard()
-        if (this.options.game === 'checkers')
-            this.board = this.generateCheckersBoard()
-        else if (this.options.game === 'none')
-            this.board = this.generateEmptyBoard()
+        if (!id) {
+            if (this.options.fen !== '') {
+                if (
+                    this.options.game === 'chess' ||
+                    this.options.game === 'none'
+                )
+                    this.board = this.generateFromFen()
+                else if (this.options.game === 'checkers')
+                    this.board = this.generateCheckersBoard()
+            } else {
+                if (this.options.game === 'chess')
+                    this.board = this.generateChessBoard()
+                else if (this.options.game === 'checkers')
+                    this.board = this.generateCheckersBoard()
+                else if (this.options.game === 'none')
+                    this.board = this.generateEmptyBoard()
+            }
+        }
     }
 
     generateChessBoard() {
@@ -74,6 +85,18 @@ class Board {
 
     generateEmptyBoard() {
         return [...Array(8)].map(() => [...Array(8)].map(() => empty))
+    }
+
+    generateFromFen() {
+        const rows = this.options.fen.split('-')
+
+        if (rows.length !== 8) throw new Error('Invalid fen code')
+
+        const board = Array(8)
+
+        rows.forEach((row, index) => (board[index] = this._getFenRow(row)))
+
+        return board
     }
 
     drawCoordinates(x, y) {
@@ -396,6 +419,32 @@ class Board {
                 })
             )
         ).join('')
+    }
+
+    _getFenRow(rowFen) {
+        let row = []
+        const rowArray = Array.from(rowFen)
+
+        rowArray.forEach((id) => {
+            if (/[1-8]/.test(id)) {
+                const num = Number.parseInt(id, 10)
+                const newPieces = [...Array(num)].map((_) => empty)
+
+                //Add new empty pieces to row
+                row = [...row, ...newPieces]
+            } else {
+                const piece = fen[id]
+
+                //If it's an invalid piece...
+                if (!piece) throw new Error('Invalid fen piece id')
+
+                row = [...row, piece]
+            }
+        })
+
+        if (row.length !== 8) throw new Error('Invalid row size')
+
+        return row
     }
 }
 
