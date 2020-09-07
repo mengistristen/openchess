@@ -4,10 +4,10 @@ const { promisify } = require('util')
 let client
 
 if (process.env.REDISTOGO_URL) {
-    const rtg = url.parse(process.env.REDISTOGO_URL)
+  const rtg = url.parse(process.env.REDISTOGO_URL)
 
-    client = redis.createClient(rtg.port, rtg.hostname)
-    client.auth(rtg.auth.split(':')[1])
+  client = redis.createClient(rtg.port, rtg.hostname)
+  client.auth(rtg.auth.split(':')[1])
 } else client = redis.createClient()
 
 client.on('error', (err) => console.log(err))

@@ -9,10 +9,10 @@ const app = express()
 app.use(helmet())
 app.use(compression())
 app.use(
-    rateLimit({
-        windowMs: 60 * 1000,
-        max: 20,
-    })
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 20
+  })
 )
 
 app.use(express.static('public'))
