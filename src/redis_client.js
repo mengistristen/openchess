@@ -18,3 +18,10 @@ module.exports.hset = promisify(client.hset).bind(client)
 module.exports.hget = promisify(client.hget).bind(client)
 module.exports.exists = promisify(client.exists).bind(client)
 module.exports.expire = promisify(client.expire).bind(client)
+module.exports.shutdown = async () => {
+  await new Promise((resolve) => {
+    client.quit(() => resolve())
+  })
+
+  await new Promise((resolve) => setImmediate(resolve))
+}

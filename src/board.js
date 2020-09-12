@@ -4,13 +4,120 @@
 const axios = require('axios')
 const btoa = require('btoa')
 const { v1: uuidv1 } = require('uuid')
-const redis = require('./redisClient')
+const redis = require('./redis_client')
 const { pieces, colors, mainRow, empty, fen } = require('./pieces')
 
 const generateCheckersRow = (even, color) => {
   return [...Array(8)].map((_, index) =>
-    index % 2 === even ? empty : { color, piece: pieces.checkers.STANDARD }
+    !!(index % 2) === even ? empty : { color, piece: pieces.checkers.STANDARD }
   )
+}
+
+const generateChessBoard = () => {
+  const board = Array(8)
+
+  //  Setup black side
+  board[0] = mainRow.map((piece) => {
+    return { color: colors.chess.BLACK, piece }
+  })
+  board[1] = [...Array(8)].map(() => {
+    return { color: colors.chess.BLACK, piece: pieces.chess.PAWN }
+  })
+
+  //  Setup empty spaces
+  board[2] = [...Array(8)].map(() => empty)
+  board[3] = [...Array(8)].map(() => empty)
+  board[4] = [...Array(8)].map(() => empty)
+  board[5] = [...Array(8)].map(() => empty)
+
+  //  Setup white side
+  board[6] = [...Array(8)].map(() => {
+    return { color: colors.chess.WHITE, piece: pieces.chess.PAWN }
+  })
+  board[7] = mainRow.map((piece) => {
+    return { color: colors.chess.WHITE, piece }
+  })
+
+  return board
+}
+
+const generateCheckersBoard = () => {
+  const board = Array(8)
+
+  board[0] = generateCheckersRow(true, colors.checkers.WHITE)
+  board[1] = generateCheckersRow(false, colors.checkers.WHITE)
+  board[2] = generateCheckersRow(true, colors.checkers.WHITE)
+  board[3] = [...Array(8)].map(() => empty)
+  board[4] = [...Array(8)].map(() => empty)
+  board[5] = generateCheckersRow(false, colors.checkers.RED)
+  board[6] = generateCheckersRow(true, colors.checkers.RED)
+  board[7] = generateCheckersRow(false, colors.checkers.RED)
+
+  return board
+}
+
+const generateEmptyBoard = () => {
+  return [...Array(8)].map(() => [...Array(8)].map(() => empty))
+}
+
+const isValidFen = (fenCode) => {
+  const rows = fenCode.split('-')
+  let isValid = true
+
+  if (rows.length !== 8) isValid = false
+
+  rows.forEach((row) => {
+    const rowData = Array.from(row)
+    let total = 0
+
+    rowData.forEach((item) => {
+      if (/[1-8]/.test(item)) total += parseInt(item, 10)
+      else if (fen[item]) total++
+      else isValid = false
+    })
+
+    if (total !== 8) isValid = false
+  })
+
+  return isValid
+}
+
+const generateFromFen = (fen) => {
+  if (!isValidFen(fen)) throw new Error('Invalid FEN')
+
+  const rows = fen.split('-')
+
+  const board = Array(8)
+
+  rows.forEach((row, index) => (board[index] = generateFenRow(row)))
+
+  return board
+}
+
+const generateFenRow = (rowFen) => {
+  let row = []
+  const rowArray = Array.from(rowFen)
+
+  rowArray.forEach((id) => {
+    if (/[1-8]/.test(id)) {
+      const num = Number.parseInt(id, 10)
+      const newPieces = [...Array(num)].map(() => empty)
+
+      //  Add new empty pieces to row
+      row = [...row, ...newPieces]
+    } else {
+      const piece = fen[id]
+
+      //  If it's an invalid piece...
+      if (!piece) throw new Error('Invalid fen piece id')
+
+      row = [...row, piece]
+    }
+  })
+
+  if (row.length !== 8) throw new Error('Invalid row size')
+
+  return row
 }
 
 class Board {
@@ -23,79 +130,20 @@ class Board {
     if (!id) {
       if (this.options.fen !== '') {
         if (this.options.game === 'chess' || this.options.game === 'none') {
-          this.board = this.generateFromFen()
+          this.board = generateFromFen(this.options.fen)
         } else if (this.options.game === 'checkers') {
-          this.board = this.generateCheckersBoard()
+          this.board = generateCheckersBoard()
         }
       } else {
         if (this.options.game === 'chess') {
-          this.board = this.generateChessBoard()
+          this.board = generateChessBoard()
         } else if (this.options.game === 'checkers') {
-          this.board = this.generateCheckersBoard()
+          this.board = generateCheckersBoard()
         } else if (this.options.game === 'none') {
-          this.board = this.generateEmptyBoard()
+          this.board = generateEmptyBoard()
         }
       }
     }
-  }
-
-  generateChessBoard() {
-    const board = Array(8)
-
-    //  Setup black side
-    board[0] = mainRow.map((piece) => {
-      return { color: colors.chess.BLACK, piece }
-    })
-    board[1] = [...Array(8)].map(() => {
-      return { color: colors.chess.BLACK, piece: pieces.chess.PAWN }
-    })
-
-    //  Setup empty spaces
-    board[2] = [...Array(8)].map(() => empty)
-    board[3] = [...Array(8)].map(() => empty)
-    board[4] = [...Array(8)].map(() => empty)
-    board[5] = [...Array(8)].map(() => empty)
-
-    //  Setup white side
-    board[6] = [...Array(8)].map(() => {
-      return { color: colors.chess.WHITE, piece: pieces.chess.PAWN }
-    })
-    board[7] = mainRow.map((piece) => {
-      return { color: colors.chess.WHITE, piece }
-    })
-
-    return board
-  }
-
-  generateCheckersBoard() {
-    const board = Array(8)
-
-    board[0] = generateCheckersRow(true, colors.checkers.WHITE)
-    board[1] = generateCheckersRow(false, colors.checkers.WHITE)
-    board[2] = generateCheckersRow(true, colors.checkers.WHITE)
-    board[3] = [...Array(8)].map(() => empty)
-    board[4] = [...Array(8)].map(() => empty)
-    board[5] = generateCheckersRow(false, colors.checkers.RED)
-    board[6] = generateCheckersRow(true, colors.checkers.RED)
-    board[7] = generateCheckersRow(false, colors.checkers.RED)
-
-    return board
-  }
-
-  generateEmptyBoard() {
-    return [...Array(8)].map(() => [...Array(8)].map(() => empty))
-  }
-
-  generateFromFen() {
-    const rows = this.options.fen.split('-')
-
-    if (rows.length !== 8) throw new Error('Invalid fen code')
-
-    const board = Array(8)
-
-    rows.forEach((row, index) => (board[index] = this._getFenRow(row)))
-
-    return board
   }
 
   drawCoordinates(x, y) {
@@ -417,32 +465,15 @@ class Board {
       )
     ).join('')
   }
-
-  _getFenRow(rowFen) {
-    let row = []
-    const rowArray = Array.from(rowFen)
-
-    rowArray.forEach((id) => {
-      if (/[1-8]/.test(id)) {
-        const num = Number.parseInt(id, 10)
-        const newPieces = [...Array(num)].map(() => empty)
-
-        //  Add new empty pieces to row
-        row = [...row, ...newPieces]
-      } else {
-        const piece = fen[id]
-
-        //  If it's an invalid piece...
-        if (!piece) throw new Error('Invalid fen piece id')
-
-        row = [...row, piece]
-      }
-    })
-
-    if (row.length !== 8) throw new Error('Invalid row size')
-
-    return row
-  }
 }
 
-module.exports = Board
+module.exports = {
+  Board,
+  generateCheckersBoard,
+  generateCheckersRow,
+  generateChessBoard,
+  generateEmptyBoard,
+  isValidFen,
+  generateFromFen,
+  generateFenRow
+}

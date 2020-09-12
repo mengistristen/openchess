@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { validate } = require('uuid')
-const Board = require('../src/Board')
-const Coordinate = require('../src/Coordinate')
+const { Board } = require('../src/board')
+const Coordinate = require('../src/coordinate')
 
 /*
     Method: GET
