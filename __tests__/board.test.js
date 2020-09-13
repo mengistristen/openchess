@@ -2,7 +2,10 @@ const {
   isValidFen,
   generateFromFen,
   generateFenRow,
-  generateCheckersRow
+  generateCheckersRow,
+  generateCheckersBoard,
+  generateChessBoard,
+  generateEmptyBoard
 } = require('../src/board')
 const { pieces, colors, empty } = require('../src/pieces')
 const redis = require('../src/redis_client')
@@ -113,8 +116,45 @@ cases(
   ]
 )
 
-test('generateCheckersRow fails for invalid color', () => {
-  expect(() => generateCheckersRow(true, 'green')).toThrow()
-  expect(() => generateCheckersRow(true, '')).toThrow()
-  expect(() => generateCheckersRow(true)).toThrow()
+describe('generateCheckersRow: invalid colors', () => {
+  test('generateCheckersRow fails for invalid color', () => {
+    expect(() => generateCheckersRow(true, 'green')).toThrow()
+    expect(() => generateCheckersRow(true, '')).toThrow()
+    expect(() => generateCheckersRow(true)).toThrow()
+  })
+})
+
+describe('generateCheckersBoard creates valid board', () => {
+  const board = generateCheckersBoard()
+  test('board has 8 rows', () => {
+    expect(board.length).toBe(8)
+  })
+
+  test('board has 8 columns', () => {
+    board.forEach((row) => expect(row.length).toBe(8))
+  })
+})
+
+describe('generateChessBoard creates valid board', () => {
+  const board = generateChessBoard()
+
+  test('board has 8 rows', () => {
+    expect(board.length).toBe(8)
+  })
+
+  test('board has 8 columns', () => {
+    board.forEach((row) => expect(row.length).toBe(8))
+  })
+})
+
+describe('generateEmptyBoard creates valid board', () => {
+  const board = generateEmptyBoard()
+
+  test('board has 8 rows', () => {
+    expect(board.length).toBe(8)
+  })
+
+  test('board has 8 columns', () => {
+    board.forEach((row) => expect(row.length).toBe(8))
+  })
 })
