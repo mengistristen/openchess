@@ -8,6 +8,10 @@ const redis = require('./redis_client')
 const { pieces, colors, mainRow, empty, fen } = require('./pieces')
 
 const generateCheckersRow = (even, color) => {
+  if (!Object.values(colors.checkers).includes(color)) {
+    throw new Error(`Invalid color: ${color}`)
+  }
+
   return [...Array(8)].map((_, index) =>
     !!(index % 2) === even ? empty : { color, piece: pieces.checkers.STANDARD }
   )

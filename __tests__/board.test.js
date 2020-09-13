@@ -1,9 +1,9 @@
 const {
   isValidFen,
   generateFromFen,
+  generateFenRow,
   generateCheckersRow
 } = require('../src/board')
-const { parseCoordinate } = require('../src/coordinate')
 const { pieces, colors, empty } = require('../src/pieces')
 const redis = require('../src/redis_client')
 const cases = require('jest-in-case')
@@ -46,33 +46,6 @@ cases(
   ]
 )
 
-//  parseCoordinate
-cases(
-  'parseCoordinate: valid coordinates',
-  (options) => {
-    expect(() => parseCoordinate(options.value)).not.toThrow()
-    expect(parseCoordinate(options.value)).toStrictEqual(options.expected)
-  },
-  [
-    { name: 'bottom left', value: 'A1', expected: [0, 7] },
-    { name: 'upper right', value: 'H8', expected: [7, 0] },
-    { name: 'middle', value: 'E5', expected: [4, 3] }
-  ]
-)
-
-cases(
-  'parseCoordinate: invalid coordinates',
-  (options) => {
-    expect(() => parseCoordinate(options.value)).toThrow()
-  },
-  [
-    { name: 'column out of bounds', value: 'A9' },
-    { name: 'row out of bounds', value: 'I1' },
-    { name: 'other string', value: 'other' },
-    { name: 'empty', value: '' }
-  ]
-)
-
 //  generateFromFen
 describe('generateFromFen only generates from valid FEN codes', () => {
   test('invalid FEN code throws error', () => {
@@ -90,17 +63,45 @@ describe('generateFromFen only generates from valid FEN codes', () => {
   })
 })
 
+//  generateFenRow
+cases(
+  'generateFenRow: valid fen rows',
+  (options) => {
+    expect(generateFenRow(options.fen)).toHaveLength(8)
+    expect(() => generateFenRow(options.fen)).not.toThrow()
+  },
+  [
+    { name: 'all empty', fen: '8' },
+    { name: 'all pieces', fen: 'pppppppp' },
+    { name: 'mixed empty and pieces', fen: '2pk2qr' }
+  ]
+)
+
+cases(
+  'generateFenRow: invalid fen rows',
+  (options) => {
+    expect(() => generateFenRow(options.fen)).toThrow()
+  },
+  [
+    { name: 'too short, all empty', fen: '3' },
+    { name: 'too short, some empty', fen: 'pqk' },
+    { name: 'too long, all empty', fen: '9' },
+    { name: 'too long, some empty', fen: '2ppkq4' },
+    { name: 'invalid piece id', fen: 'pppppppt' }
+  ]
+)
+
 //  generateCheckersRow
 cases(
   'generateCheckersRow generates rows with full and empty spaces',
   (options) => {
-    expect(generateCheckersRow(options.even, options.color)).toContainEqual(
-      empty
-    )
-    expect(generateCheckersRow(options.even, options.color)).toContainEqual({
+    const result = generateCheckersRow(options.even, options.color)
+    expect(result).toContainEqual(empty)
+    expect(result).toContainEqual({
       color: options.color,
       piece: pieces.checkers.STANDARD
     })
+    expect(result).toHaveLength(8)
   },
   [
     { name: 'black even pieces', even: true, color: colors.checkers.BLACK },
@@ -111,3 +112,9 @@ cases(
     { name: 'red odd pieces', even: false, color: colors.checkers.RED }
   ]
 )
+
+test('generateCheckersRow fails for invalid color', () => {
+  expect(() => generateCheckersRow(true, 'green')).toThrow()
+  expect(() => generateCheckersRow(true, '')).toThrow()
+  expect(() => generateCheckersRow(true)).toThrow()
+})
