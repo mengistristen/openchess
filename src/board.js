@@ -406,7 +406,21 @@ class Board {
     const options = JSON.parse(await redis.hget(`game:${id}`, 'options'))
     const board = new Board(options, id)
 
-    if (board.options.fen !== '') board.board = board.generateFromFen()
+    if (board.options.fen !== '') {
+      if (board.options.game === 'chess' || board.options.game === 'none') {
+        board.board = generateFromFen(board.options.fen)
+      } else if (board.options.game === 'checkers') {
+        board.board = generateCheckersBoard()
+      }
+    } else {
+      if (board.options.game === 'chess') {
+        board.board = generateChessBoard()
+      } else if (board.options.game === 'checkers') {
+        board.board = generateCheckersBoard()
+      } else if (board.options.game === 'none') {
+        board.board = generateEmptyBoard()
+      }
+    }
 
     await board.save()
 
