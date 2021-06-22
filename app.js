@@ -5,7 +5,7 @@ const compression = require('compression')
 const rateLimit = require('express-rate-limit')
 
 const app = express()
-console.log(process.env.NODE_ENV)
+
 if (process.env.NODE_ENV === 'production') {
   app.use(helmet())
   app.use(compression())
