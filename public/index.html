@@ -1,65 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link href="./style.css" type="text/css" rel="stylesheet" />
-        <title>openchess Documentation</title>
-    </head>
-    <body>
-        <div class="container">
-            <div class="route">
-                <h2>Create a Game:</h2>
-                <pre><code>https://openchess-api.com/api/new</code></pre>
-                <p class="description">
-                    Add <code>game</code> as a parameter to change the initial
-                    setup of the board. Chess, checkers, and none are available
-                    options.
-                </p>
-                <button class="collapsible">All Options</button>
-                <div class="content">Here's all the options</div>
-            </div>
-            <div class="route">
-                <h2>Get Game Board:</h2>
-                <pre><code>https://openchess-api.com/api/game/&lt;game-id&gt;</code></pre>
-                <p class="description">
-                    Add <code>game</code> as a parameter to change the initial
-                    setup of the board. Chess, checkers, and none are available
-                    options.
-                </p>
-            </div>
-            <div class="route">
-                <h2>Move Piece:</h2>
-                <pre><code>https://openchess-api.com/api/game/&lt;game-id&gt;/&lt;from&gt;-&lt;to&gt;</code></pre>
-                <p class="description">
-                    <code>from</code> and <code>to</code> are coordinates of the
-                    form [A-H][1-8] specifying which piece you want to move
-                    where. To generate the svg, there must be a piece at the
-                    <code>from</code> coordinate.
-                </p>
-            </div>
-            <div class="route">
-                <h2>Set Piece on Board:</h2>
-                <pre><code>https://openchess-api.com/api/game/&lt;game-id&gt;/set/&lt;tile&gt;-&lt;color&gt;-&lt;piece&gt;</code></pre>
-                <p class="description">
-                    Add <code>game</code> as a parameter to change the initial
-                    setup of the board. Chess, checkers, and none are available
-                    options.
-                </p>
-            </div>
-            <div class="route">
-                <h2>Remove Piece from Board:</h2>
-                <pre><code>https://openchess-api.com/api/game/&lt;game-id&gt;/remove/&lt;tile&gt;</code></pre>
-                <p class="description">
-                    Add <code>game</code> as a parameter to change the initial
-                    setup of the board. Chess, checkers, and none are available
-                    options.
-                </p>
-            </div>
-            <div id="boardShowcase"></div>
-            <button id="getGame">Get Game</button>
-        </div>
-        <script src="./collapsible.js"></script>
-        <script src="./showcase.js"></script>
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <title>openchess API</title>
+  </head>
+  <body class="bg-blue-700">
+    Hello world
+  </body>
 </html>

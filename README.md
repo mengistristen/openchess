@@ -30,7 +30,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/mengistristen/openchess">
-    <img src="images/openchess_logo.png" alt="Logo" width="80" height="80">
+    <img src="public/images/openchess_logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h2 align="center">openchess</h3>
