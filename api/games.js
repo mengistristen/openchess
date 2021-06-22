@@ -43,12 +43,12 @@ router.get('/new', async (req, res) => {
 
     await board.save()
 
-    res.status(201).send({
+    res.status(201).json({
       id: board.id,
       options
     })
   } catch (err) {
-    res.send({
+    res.json({
       message: err.message
     })
   }
@@ -73,7 +73,7 @@ router.get('/game/:id', async (req, res) => {
       .status(200)
       .send(await board.render())
   } catch (err) {
-    res.type('json').status(404).send({
+    res.status(404).json({
       message: err.message
     })
   }
@@ -118,7 +118,7 @@ router.get('/game/:id/move/:from-:to', async (req, res) => {
       res.send(await board.render(animation))
     } else res.send(await board.render())
   } catch (err) {
-    res.type('json').status(400).send({
+    res.status(400).json({
       message: err.message
     })
   }
@@ -200,7 +200,7 @@ router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
       .status(200)
       .send(await board.render())
   } catch (err) {
-    res.type('json').status(404).send({
+    res.status(404).json({
       message: err.message
     })
   }
@@ -235,7 +235,7 @@ router.get('/game/:id/remove/:tile', async (req, res) => {
       .status(200)
       .send(await board.render())
   } catch (err) {
-    res.type('json').status(404).send({
+    res.status(404).json({
       message: err.message
     })
   }
