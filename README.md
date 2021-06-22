@@ -33,7 +33,7 @@
     <img src="public/images/openchess_logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h2 align="center">openchess</h3>
+  <h2 align="center">openchess</h2>
 
   <p align="center">
     A simple API for playing games that use an 8x8 checkerboard
