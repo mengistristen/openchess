@@ -6,8 +6,284 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
     <title>openchess API</title>
+    <style>
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+      }
+
+      table {
+        border-collapse: collapse;
+      }
+    </style>
   </head>
-  <body class="bg-blue-700">
-    Hello world
+  <body class="bg-gray-100">
+    <div class="container bg-white mx-auto my-2 p-2 font-sans">
+      <header class="my-4">
+        <img
+          class="h-20 w-20 mx-auto"
+          src="images/openchess_logo.png"
+          alt="openchess logo"
+        />
+        <h1 class="text-center text-xl">openchess API Reference</h1>
+        <p class="text-center text-yellow-400 hover:underline">
+          <a href="https://github.com/mengistristen/openchess">github repo</a>
+        </p>
+      </header>
+      <main class="mx-10">
+        <div class="space-y-2 my-4">
+          <h2 class="font-bold text-lg">Create new game</h2>
+          <h3 class="font-bold">Request</h3>
+          <p class="font-mono px-4 py-2 bg-green-100 rounded">GET /api/new</p>
+          <table class="table-fixed">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th class="bg-yellow-100">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-mono">game</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  Default board layout for the game. Options are chess,
+                  checkers, or none
+                </td>
+              </tr>
+              <tr>
+                <td class="font-mono">bsize</td>
+                <td class="font-mono bg-yellow-100">number</td>
+                <td>
+                  Board size in pixels
+                </td>
+              </tr>
+              <tr>
+                <td class="font-mono">animation</td>
+                <td class="font-mono bg-yellow-100">boolean</td>
+                <td>
+                  Enables peice movement animation
+                </td>
+              </tr>
+              <tr>
+                <td class="font-mono">fen</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  FEN code for initial layout of chess board
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="font-bold">Response</h3>
+          <p class="font-mono">Type: application/json</p>
+        </div>
+        <div class="space-y-2 my-4">
+          <h2 class="font-bold text-lg">Get game</h2>
+          <h3 class="font-bold">Request</h3>
+          <p class="font-mono px-4 py-2 bg-green-100 rounded">
+            GET /api/game/${id}
+          </p>
+          <table class="table-fixed">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th class="bg-yellow-100">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-mono">id</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  ID of game to retrieve
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="font-bold">Response</h3>
+          <p class="font-mono">Type: image/svg+xml</p>
+        </div>
+        <div class="space-y-2 my-4">
+          <h2 class="font-bold text-lg">Move game piece</h2>
+          <h3 class="font-bold">Request</h3>
+          <p class="font-mono px-4 py-2 bg-green-100 rounded">
+            GET /api/game/${id}/move/${from}-${to}
+          </p>
+          <table class="table-fixed">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th class="bg-yellow-100">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-mono">id</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  ID of game to retrieve
+                </td>
+              </tr>
+              <tr>
+                <td class="font-mono">from</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  Coordinate of piece to move
+                </td>
+              </tr>
+              <tr>
+                <td class="font-mono">id</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  Coordinate of tile to move piece to
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="font-bold">Response</h3>
+          <p class="font-mono">Type: image/svg+xml</p>
+        </div>
+        <div class="space-y-2 my-4">
+          <h2 class="font-bold text-lg">Reset game to default state</h2>
+          <h3 class="font-bold">Request</h3>
+          <p class="font-mono px-4 py-2 bg-green-100 rounded">
+            GET /api/game/${id}/reset
+          </p>
+          <table class="table-fixed">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th class="bg-yellow-100">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-mono">id</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  ID of game to retrieve
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="font-bold">Response</h3>
+          <p class="font-mono">Type: image/svg+xml</p>
+        </div>
+        <div class="space-y-2 my-4">
+          <h2 class="font-bold text-lg">Get game options</h2>
+          <h3 class="font-bold">Request</h3>
+          <p class="font-mono px-4 py-2 bg-green-100 rounded">
+            GET /api/game/${id}/options
+          </p>
+          <table class="table-fixed">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th class="bg-yellow-100">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-mono">id</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  ID of game to retrieve
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="font-bold">Response</h3>
+          <p class="font-mono">Type: application/json</p>
+        </div>
+        <div class="space-y-2 my-4">
+          <h2 class="font-bold text-lg">Set piece at tile</h2>
+          <h3 class="font-bold">Request</h3>
+          <p class="font-mono px-4 py-2 bg-green-100 rounded">
+            GET /api/game/${id}/set/${tile}-${color}-${piece}
+          </p>
+          <table class="table-fixed">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th class="bg-yellow-100">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-mono">id</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  ID of game to retrieve
+                </td>
+              </tr>
+              <tr>
+                <td class="font-mono">tile</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  Coordinate of tile to set piece at
+                </td>
+              </tr>
+              <tr>
+                <td class="font-mono">color</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  Color of game piece
+                </td>
+              </tr>
+              <tr>
+                <td class="font-mono">piece</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  Piece type
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="font-bold">Response</h3>
+          <p class="font-mono">Type: image/svg+xml</p>
+        </div>
+        <div class="space-y-2 my-4">
+          <h2 class="font-bold text-lg">Remove piece at tile</h2>
+          <h3 class="font-bold">Request</h3>
+          <p class="font-mono px-4 py-2 bg-green-100 rounded">
+            GET /api/game/${id}/remove/${tile}
+          </p>
+          <table class="table-fixed">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th class="bg-yellow-100">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-mono">id</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  ID of game to retrieve
+                </td>
+              </tr>
+              <tr>
+                <td class="font-mono">tile</td>
+                <td class="font-mono bg-yellow-100">string</td>
+                <td>
+                  Coordinate to remove piece from
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3 class="font-bold">Response</h3>
+          <p class="font-mono">Type: image/svg+xml</p>
+        </div>
+      </main>
+    </div>
   </body>
 </html>
