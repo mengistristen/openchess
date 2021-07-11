@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Create SVGs for 8x8 board games with a simple REST API"
+    />
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
     <title>openchess API</title>
     <style>
@@ -34,9 +38,30 @@
         >
       </p>
     </header>
+    <section class="container bg-white mx-auto my-2 p-2 font-sans">
+      <h2 class="text-center text-xl">About</h2>
+      <div class="mx-4">
+        <p class="my-2 mx-4">
+          openchess is a simple REST API that generates SVGs for 8x8 board games
+          like chess and checkers. Inspired by
+          <a
+            class="text-yellow-500 hover:underline"
+            href="https://deckofcardsapi.com/"
+            target="_blank"
+            >deckofcardsapi.com</a
+          >, openchess allows users to create games, move and set pieces, and
+          view games using simple HTTP GET requests.
+        </p>
+        <p class="my-2 mx-4">
+          openchess is built using Express in Node.js. For storing game
+          information and caching simple SVGs, we used Redis. openchess is
+          tested using Jest.
+        </p>
+      </div>
+    </section>
     <main class="container bg-white mx-auto my-2 p-2 font-sans">
       <h2 class="text-center text-xl">API Reference</h2>
-      <div class="mx-4">
+      <div class="mx-4 flex flex-col gap-y-2">
         <div class="space-y-2 my-4">
           <h3 class="font-bold text-lg">Create new game</h3>
           <h4 class="font-bold">Request</h4>
