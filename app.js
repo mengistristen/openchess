@@ -3,6 +3,7 @@ const api = require('./api/games')
 const helmet = require('helmet')
 const compression = require('compression')
 const rateLimit = require('express-rate-limit')
+const { ErrorMiddleware } = require('./error_handling')
 
 const app = express()
 
@@ -19,5 +20,6 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use(express.static('public'))
 app.use('/api', api)
+app.use(ErrorMiddleware)
 
 module.exports = app

@@ -6,6 +6,7 @@ const btoa = require('btoa')
 const { v1: uuidv1 } = require('uuid')
 const redis = require('./redis_client')
 const { pieces, colors, mainRow, empty, fen } = require('./pieces')
+const { GameError, ErrorTypes } = require('../error_handling')
 
 const generateCheckersRow = (even, color) => {
   if (!Object.values(colors.checkers).includes(color)) {
@@ -87,7 +88,7 @@ const isValidFen = (fenCode) => {
 }
 
 const generateFromFen = (fen) => {
-  if (!isValidFen(fen)) throw new Error('Invalid FEN')
+  if (!isValidFen(fen)) throw new GameError('Invalid FEN', ErrorTypes.RESOURCE)
 
   const rows = fen.split('-')
 
@@ -113,13 +114,17 @@ const generateFenRow = (rowFen) => {
       const piece = fen[id]
 
       //  If it's an invalid piece...
-      if (!piece) throw new Error('Invalid fen piece id')
+      if (!piece) {
+        throw new GameError('Invalid fen piece id', ErrorTypes.RESOURCE)
+      }
 
       row = [...row, piece]
     }
   })
 
-  if (row.length !== 8) throw new Error('Invalid row size')
+  if (row.length !== 8) {
+    throw new GameError('Invalid row size', ErrorTypes.RESOURCE)
+  }
 
   return row
 }
@@ -283,7 +288,7 @@ class Board {
 
     //  can't move an empty piece onto another spot
     if (this.board[y1][x1].piece === pieces.NONE) {
-      throw new Error(`(${x1},${y1}) contains no piece`)
+      throw new GameError(`(${x1},${y1}) contains no piece`, ErrorTypes.GAME)
     }
 
     //  if game is strict, can't move piece onto same color
@@ -291,8 +296,9 @@ class Board {
       this.board[y1][x1].color === this.board[y2][x2].color &&
       this.options.strict !== 'false'
     ) {
-      throw new Error(
-        "Can't move piece onto piece of the same color in strict game"
+      throw new GameError(
+        "Can't move piece onto piece of the same color in strict game",
+        ErrorTypes.GAME
       )
     }
 
@@ -345,14 +351,15 @@ class Board {
     }
 
     if (validColors.length === 0) {
-      throw new Error('Invalid piece-game combination')
+      throw new GameError('Invalid piece-game combination', ErrorTypes.RESOURCE)
     }
 
     if (!validColors.includes(color) || color === colors.NONE) {
-      throw new Error(
+      throw new GameError(
         `Invalid color attribute: '${color}', expected: ${validColors.join(
           ', '
-        )}`
+        )}`,
+        ErrorTypes.RESOURCE
       )
     }
 
@@ -369,8 +376,9 @@ class Board {
     } else validPieces = Object.values(pieces[this.options.game])
 
     if (!validPieces.includes(piece) || piece === pieces.NONE) {
-      throw new Error(
-        `Invalid piece: '${piece}', expected: ${validPieces.join(', ')}`
+      throw new GameError(
+        `Invalid piece: '${piece}', expected: ${validPieces.join(', ')}`,
+        ErrorTypes.RESOURCE
       )
     }
 
@@ -389,7 +397,7 @@ class Board {
 
   static async getBoardById(id) {
     if (!(await redis.exists(`game:${id}`))) {
-      throw new Error(`Invalid game id: ${id}`)
+      throw new GameError(`Invalid game id: ${id}`, ErrorTypes.RESOURCE)
     }
 
     const options = JSON.parse(await redis.hget(`game:${id}`, 'options'))
@@ -401,7 +409,9 @@ class Board {
   }
 
   static async resetBoard(id) {
-    if (!redis.exists(`game:${id}`)) throw new Error(`Invalid game id: ${id}`)
+    if (!redis.exists(`game:${id}`)) {
+      throw new GameError(`Invalid game id: ${id}`, ErrorTypes.RESOURCE)
+    }
 
     const options = JSON.parse(await redis.hget(`game:${id}`, 'options'))
     const board = new Board(options, id)

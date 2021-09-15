@@ -1,9 +1,11 @@
+const { GameError, ErrorTypes } = require('../error_handling')
 const Coordinate = /[A-H][1-8]/
 
 Coordinate.parseCoordinate = (coordinate) => {
   if (!Coordinate.test(coordinate)) {
-    throw new Error(
-      `Invalid coordinate: ${coordinate}, expected to match [A-H][1-8]`
+    throw new GameError(
+      `Invalid coordinate: ${coordinate}, expected to match [A-H][1-8]`,
+      ErrorTypes.RESOURCE
     )
   }
 

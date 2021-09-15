@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const { validate } = require('uuid')
 const { Board } = require('../src/board')
+const { GameError, ErrorTypes } = require('../error_handling')
 const Coordinate = require('../src/coordinate')
 
 /*
@@ -8,7 +9,7 @@ const Coordinate = require('../src/coordinate')
     Route: /new
     Purpose: This route is used to create a new game.
 */
-router.get('/new', async (req, res) => {
+router.get('/new', async (req, res, next) => {
   try {
     const options = {
       game: req.query.game || 'chess',
@@ -36,7 +37,10 @@ router.get('/new', async (req, res) => {
       options.game !== 'checkers' &&
       options.game !== 'none'
     ) {
-      throw new Error(`Invalid game type: ${options.game}`)
+      throw new GameError(
+        `Invalid game type: ${options.game}`,
+        ErrorTypes.RESOURCE
+      )
     }
 
     const board = new Board(options)
@@ -47,10 +51,8 @@ router.get('/new', async (req, res) => {
       id: board.id,
       options
     })
-  } catch (err) {
-    res.json({
-      message: err.message
-    })
+  } catch (error) {
+    next(error)
   }
 })
 
@@ -60,10 +62,13 @@ router.get('/new', async (req, res) => {
     Purpose: This method is used to get an SVG image
         for a game specified by an id.
 */
-router.get('/game/:id', async (req, res) => {
+router.get('/game/:id', async (req, res, next) => {
   try {
     if (!validate(req.params.id)) {
-      throw new Error(`Invalid game id: ${req.params.id}`)
+      throw new GameError(
+        `Invalid game id: ${req.params.id}`,
+        ErrorTypes.RESOURCE
+      )
     }
 
     const board = await Board.getBoardById(req.params.id)
@@ -72,10 +77,8 @@ router.get('/game/:id', async (req, res) => {
       .type('image/svg+xml')
       .status(200)
       .send(await board.render())
-  } catch (err) {
-    res.status(404).json({
-      message: err.message
-    })
+  } catch (error) {
+    next(error)
   }
 })
 
@@ -85,25 +88,32 @@ router.get('/game/:id', async (req, res) => {
     Purpose: This route is used to move a piece
         on a board specified by an id.
 */
-router.get('/game/:id/move/:from-:to', async (req, res) => {
+router.get('/game/:id/move/:from-:to', async (req, res, next) => {
   try {
     const { from, to, id } = req.params
 
     if (!validate(id)) throw new Error(`Invalid game id: ${id}`)
 
     if (!Coordinate.test(from)) {
-      throw new Error(
-        `Invalid from coordinate: ${from}, expected to match [A-H][1-8]`
+      throw new GameError(
+        `Invalid from coordinate: ${from}, expected to match [A-H][1-8]`,
+        ErrorTypes.RESOURCE
       )
     }
 
     if (!Coordinate.test(to)) {
-      throw new Error(
-        `Invalid to coordinate: ${to}, expected to match [A-H][1-8]`
+      throw new GameError(
+        `Invalid to coordinate: ${to}, expected to match [A-H][1-8]`,
+        ErrorTypes.RESOURCE
       )
     }
 
-    if (from === to) throw new Error(`Piece at ${from} cannot move onto itself`)
+    if (from === to) {
+      throw new GameError(
+        `Piece at ${from} cannot move onto itself`,
+        ErrorTypes.RESOURCE
+      )
+    }
 
     const board = await Board.getBoardById(id)
     const [x1, y1] = Coordinate.parseCoordinate(from)
@@ -117,10 +127,8 @@ router.get('/game/:id/move/:from-:to', async (req, res) => {
     if (board.options.animation !== 'false') {
       res.send(await board.render(animation))
     } else res.send(await board.render())
-  } catch (err) {
-    res.status(400).json({
-      message: err.message
-    })
+  } catch (error) {
+    next(error)
   }
 })
 
@@ -130,10 +138,13 @@ router.get('/game/:id/move/:from-:to', async (req, res) => {
     Purpose: This route is used to reset a game to its
         original state.
 */
-router.get('/game/:id/reset', async (req, res) => {
+router.get('/game/:id/reset', async (req, res, next) => {
   try {
     if (!validate(req.params.id)) {
-      throw new Error(`Invalid game id: ${req.params.id}`)
+      throw new GameError(
+        `Invalid game id: ${req.params.id}`,
+        ErrorTypes.RESOURCE
+      )
     }
 
     const board = await Board.resetBoard(req.params.id)
@@ -142,10 +153,8 @@ router.get('/game/:id/reset', async (req, res) => {
       .type('image/svg+xml')
       .status(200)
       .send(await board.render())
-  } catch (err) {
-    res.status(404).json({
-      message: err.message
-    })
+  } catch (error) {
+    next(error)
   }
 })
 
@@ -155,19 +164,20 @@ router.get('/game/:id/reset', async (req, res) => {
     Purpose: This route is used to view the options of
         a game
 */
-router.get('/game/:id/options', async (req, res) => {
+router.get('/game/:id/options', async (req, res, next) => {
   try {
     if (!validate(req.params.id)) {
-      throw new Error(`Invalid game id: ${req.params.id}`)
+      throw new GameError(
+        `Invalid game id: ${req.params.id}`,
+        ErrorTypes.RESOURCE
+      )
     }
 
     const board = await Board.getBoardById(req.params.id)
 
     res.status(200).json({ options: board.options })
-  } catch (err) {
-    res.status(404).json({
-      message: err.message
-    })
+  } catch (error) {
+    next(error)
   }
 })
 
@@ -177,15 +187,18 @@ router.get('/game/:id/options', async (req, res) => {
     Purpose: This route is used to set a new piece onto
         a specific tile on the board.
 */
-router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
+router.get('/game/:id/set/:tile-:color-:piece', async (req, res, next) => {
   try {
     const { id, tile, color, piece } = req.params
 
-    if (!validate(id)) throw new Error(`Invalid game id: ${id}`)
+    if (!validate(id)) {
+      throw new GameError(`Invalid game id: ${id}`, ErrorTypes.RESOURCE)
+    }
 
     if (!Coordinate.test(tile)) {
       throw new Error(
-        `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`
+        `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`,
+        ErrorTypes.RESOURCE
       )
     }
 
@@ -199,10 +212,8 @@ router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
       .type('image/svg+xml')
       .status(200)
       .send(await board.render())
-  } catch (err) {
-    res.status(404).json({
-      message: err.message
-    })
+  } catch (error) {
+    next(error)
   }
 })
 
@@ -212,15 +223,18 @@ router.get('/game/:id/set/:tile-:color-:piece', async (req, res) => {
     Purpose: This route is used to remove a piece at the
         given spot on the board
 */
-router.get('/game/:id/remove/:tile', async (req, res) => {
+router.get('/game/:id/remove/:tile', async (req, res, next) => {
   try {
     const { id, tile } = req.params
 
-    if (!validate(id)) throw new Error(`Invalid game id: ${id}`)
+    if (!validate(id)) {
+      throw new GameError(`Invalid game id: ${id}`, ErrorTypes.RESOURCE)
+    }
 
     if (!Coordinate.test(tile)) {
-      throw new Error(
-        `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`
+      throw new GameError(
+        `Invalid coordinate: ${tile}, expected to match [A-H][1-8]`,
+        ErrorTypes.RESOURCE
       )
     }
 
@@ -234,10 +248,8 @@ router.get('/game/:id/remove/:tile', async (req, res) => {
       .type('image/svg+xml')
       .status(200)
       .send(await board.render())
-  } catch (err) {
-    res.status(404).json({
-      message: err.message
-    })
+  } catch (error) {
+    next(error)
   }
 })
 
